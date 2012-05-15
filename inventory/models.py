@@ -1,22 +1,45 @@
 from django.db import models
+from datetime import datetime
+from django.forms import ModelForm
+from django import forms
 
-class Locations(models.Model):
+
+class Location(models.Model):
     name=models.CharField(max_length=255)
-    location_id=models.CharField(max_length=255)
+    location_number=models.CharField(max_length=255)
     organization=models.CharField(max_length=255)
     
-class Beverages(models.Model):
+    def __unicode__(self):
+        return self.name
+    
+class Beverage(models.Model):
     name=models.CharField(max_length=255)
-    units_reported=models.IntegerField(max_length=10)
+    location=models.ForeignKey(Location)
     fill_to_standard=models.IntegerField(max_length=10)
     order_when_below=models.IntegerField(max_length=10)
     
-class Orders(models.Model):
-    amount=models.IntegerField(max_length=20)
+    def __unicode__(self):
+        return self.name
+    
+class Order(models.Model):
+    beverage=models.ForeignKey(Beverage)
+    units_ordered=models.IntegerField(max_length=10)
     timestamp=models.DateTimeField(auto_now=True)
     
 class Inventory(models.Model):
-    location=models.ForeignKey(Locations)
-    beverage=models.ForeignKey(Beverages)
-    notes=models.TextField(max_length=2550)
+    location=models.ForeignKey(Location)
+    beverage=models.ForeignKey(Beverage)
+    units_reported=models.IntegerField(max_length=10)
     timestamp=models.DateTimeField(auto_now=True)
+    
+class InventoryForm(ModelForm):
+    units_reported=forms.IntegerField()
+    class Meta:
+        model=Beverage
+        fields=('name', 'id')
+
+class Note(models.Model):
+    location=models.ForeignKey(Location)
+    timestamp=models.DateTimeField(auto_now=True)
+    content=models.TextField()
+    

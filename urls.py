@@ -3,6 +3,7 @@ from django.conf import settings
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
+from inventory.views import showLastInventory, updateInventory, test
 
 urlpatterns = patterns('',
     # Examples:
@@ -14,6 +15,9 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^location/(?P<location_number>[^\.]+)$', showLastInventory),
+    url(r'^update-inventory/(?P<location_number>[^\.]+)$', updateInventory),
+    url(r'^bev/(?P<location_number>[^\.]+)$', test),
 )
 
 if settings.DEBUG:

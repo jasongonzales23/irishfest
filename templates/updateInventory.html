@@ -1,0 +1,7 @@
+
+<form action="/update-inventory/" method="post">
+    {% csrf_token %}
+    {{ formset.as_p }}
+    <input type="submit" value="Go go go"/>
+</form>
+
