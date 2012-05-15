@@ -21,9 +21,6 @@ def showLastInventory(request, location_number):
     except ObjectDoesNotExist:
         return HttpResponse('no location for that')
     
-    #beverage = Beverage.objects.filter(location__location_number=location_number)
-    #inventory = beverage.inventory_set.all()
-    #beverage = Beverage.objects.filter(location__location_number=location_number)
     latest = Inventory.objects.filter(location=location).latest('timestamp')
     latest = latest.timestamp
     d = latest.date()
@@ -49,7 +46,7 @@ def updateInventory(request, location_number):
     whatever else
     """
     
-    InventoryFormSet=modelformset_factory(Beverage, form=InventoryForm)
+    InventoryFormSet=modelformset_factory(Beverage, form=InventoryForm, max_num=0)
     #location = Location.objects.get(location_number=location_number)
     qs=Beverage.objects.filter(location__location_number=location_number)
     formset=InventoryFormSet(queryset=qs)
