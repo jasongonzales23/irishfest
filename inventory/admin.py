@@ -15,7 +15,7 @@ class LocationAdmin(admin.ModelAdmin):
     list_display = ('name', 'location_number', 'organization',)
     
     inlines = [
-        BeverageInlineAdmin, InventoryInlineAdmin#, OrderInlineAdmin,
+        BeverageInlineAdmin, InventoryInlineAdmin, OrderInlineAdmin,
     ]
 
 class BeverageAdmin(admin.ModelAdmin):

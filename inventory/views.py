@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template.context import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from inventory.models import Beverage, Location, Inventory, Note, Order, InventoryForm
+from inventory.models import Beverage, Location, Inventory, Note, Order, InventoryForm, OrderForm
 from django.template.defaultfilters import slugify
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
@@ -40,14 +40,9 @@ def showLastInventory(request, location_number):
     )
     
 def updateInventory(request, location_number):
-    """
-    TODO: set a max of three on the fields
-    lay out as a table
-    whatever else
-    """
     
     InventoryFormSet=modelformset_factory(Beverage, form=InventoryForm, max_num=0)
-    #location = Location.objects.get(location_number=location_number)
+    location=Location.objects.get(location_number=location_number)
     qs=Beverage.objects.filter(location__location_number=location_number)
     formset=InventoryFormSet(queryset=qs)
     if request.method=='POST':
@@ -56,38 +51,52 @@ def updateInventory(request, location_number):
             for form in formset:
                 beverage=form.save(commit=False)
                 units_reported=form.cleaned_data['units_reported']
-                Inventory(beverage=beverage, units_reported=units_reported).save()
-    
+                Inventory(location=location, beverage=beverage, units_reported=units_reported).save()
+                
+        return HttpResponseRedirect('/location/' + location_number )
     else:
         
         return render_to_response('updateInventory.html',
-            {'formset': formset},
+            {'formset': formset, 'location':location},
             context_instance=RequestContext(request)
         )
     
-    #if request.method == 'POST':
-    #    form = InventoryForm(request.POST)
-    #    
-    #else:
-    #    location = Location.objects.get(location_number=location_number)
-    #    inventory = Inventory.objects.filter(location=location)
-    #    
-    #    InventoryFormSet = inlineformset_factory(Beverage, Inventory)
-    #    beverage = Beverage.objects.get(location=location)
-    #    
-    #    formset = InventoryFormSet(instance=beverage)
-    #    
-    #    return render_to_response('updateInventory.html',
-    #        {'formset': formset},
-    #        context_instance=RequestContext(request)
-    #    )
+def recordOrder(request, location_number):
+    
+    OrderFormSet=modelformset_factory(Beverage, form=OrderForm, max_num=0)
+    location=Location.objects.get(location_number=location_number)
+    qs=Beverage.objects.filter(location__location_number=location_number)
+    formset=OrderFormSet(queryset=qs)
+    if request.method=='POST':
+        formset=OrderFormSet(request.POST)
+        if formset.is_valid():
+            for form in formset:
+                beverage=form.save(commit=False)
+                units_ordered=form.cleaned_data['units_ordered']
+                Order(location=location, beverage=beverage, units_ordered=units_ordered).save()
+        return HttpResponseRedirect('/location/' + location_number )
+    
+    else:
+        return render_to_response('record-order.html',
+            {'formset': formset, 'location':location},
+            context_instance=RequestContext(request)
+        )
+    
+def orderHistory(request, location_number):
+    return HttpResponse('hello')
+
+def inventoryHistory(request, location_number):
+    return HttpResponse('hello')
+    
+def startingInventory(request, location_number):
+    return HttpResponse('hello')
+    
 
 def test(request, location_number):
-    #location = Location.objects.get(location_number=location_number)
+    location=Location.objects.get(location_number=location_number)
     bev=Beverage.objects.filter(location__location_number=location_number)
     
     return render_to_response('test.html',
-        {'bev':bev},
+        {'bev':bev, 'location':location},
         context_instance=RequestContext(request)
-    )
-    
+    )    
