@@ -24,11 +24,11 @@ class Beverage(models.Model):
 class Order(models.Model):
     beverage=models.ForeignKey(Beverage)
     location=models.ForeignKey(Location)
-    units_ordered=models.IntegerField(max_length=10)
+    units_ordered=models.IntegerField(max_length=10, default=0)
     timestamp=models.DateTimeField(auto_now=True)
     
 class OrderForm(ModelForm):
-    units_ordered=forms.IntegerField(required=False)
+    units_ordered=forms.IntegerField(initial=0)
     class Meta:
         model=Beverage
         fields=('name', 'id')
@@ -41,7 +41,7 @@ class StartingInventory(models.Model):
 class Inventory(models.Model):
     location=models.ForeignKey(Location)
     beverage=models.ForeignKey(Beverage)
-    units_reported=models.IntegerField(max_length=10)
+    units_reported=models.IntegerField(max_length=10, default=0)
     timestamp=models.DateTimeField(auto_now=True)
     
 class InventoryForm(ModelForm):

@@ -61,10 +61,12 @@ def updateInventory(request, location_number):
     
 def recordOrder(request, location_number):
     
-    OrderFormSet=modelformset_factory(Beverage, form=OrderForm, max_num=0)
+    OrderFormSet=modelformset_factory(Beverage, form=OrderForm, extra=0)
     location=Location.objects.get(location_number=location_number)
     qs=Beverage.objects.filter(location__location_number=location_number)
+    beverage=Order(units_ordered=0)
     formset=OrderFormSet(queryset=qs)
+    
     if request.method=='POST':
         formset=OrderFormSet(request.POST)
         if formset.is_valid():
