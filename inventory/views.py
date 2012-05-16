@@ -39,7 +39,6 @@ def showLastInventory(request, location_number):
     )
     
 def updateInventory(request, location_number):
-    
     InventoryFormSet=modelformset_factory(Beverage, form=InventoryForm, max_num=0)
     location=Location.objects.get(location_number=location_number)
     qs=Beverage.objects.filter(location__location_number=location_number)
@@ -82,7 +81,6 @@ def recordOrder(request, location_number):
         )
     
 def orderHistory(request, location_number):
-    
     location=Location.objects.get(location_number=location_number)
     order=Order.objects.filter(location__location_number=location_number).order_by('-timestamp')
     
@@ -92,11 +90,38 @@ def orderHistory(request, location_number):
     )
 
 def inventoryHistory(request, location_number):
-    return HttpResponse('hello')
+    location=Location.objects.get(location_number=location_number)
+    inventory=Inventory.objects.filter(location__location_number=location_number).order_by('-timestamp')
+    
+    return render_to_response('inventory-history.html',
+        {'location':location, 'inventory':inventory},
+        context_instance=RequestContext(request)
+    )    
     
 def startingInventory(request, location_number):
-    return HttpResponse('hello')
-
+        #change to get obj or 404
+    try:
+        location = Location.objects.get(location_number=location_number)
+        
+    except ObjectDoesNotExist:
+        return HttpResponse('no location for that')
+    
+    latest = Inventory.objects.filter(location=location).latest('timestamp')
+    latest = latest.timestamp
+    d = latest.date()
+    h = latest.hour
+    m = latest.minute
+    s = latest.second - 1
+    
+    lt = datetime.time(h,m,s)
+    latest = datetime.datetime.combine(d, lt)
+    
+    inventory = Inventory.objects.filter(location=location).filter(timestamp__gte=latest)
+    
+    return render_to_response('location.html',
+        {'location':location, 'inventory':inventory},
+        context_instance=RequestContext(request)
+    )
 def notes(request, location_number):
     return HttpResponse('hello')
 

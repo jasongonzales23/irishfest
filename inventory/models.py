@@ -33,7 +33,11 @@ class OrderForm(ModelForm):
         model=Beverage
         fields=('name', 'id')
     
-    
+class StartingInventory(models.Model):
+    location=models.ForeignKey(Location)
+    beverage=models.ForeignKey(Beverage)
+    units=models.IntegerField()
+
 class Inventory(models.Model):
     location=models.ForeignKey(Location)
     beverage=models.ForeignKey(Beverage)

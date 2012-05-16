@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block base_content %}
+<h1>{{ location.name }}</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Beverage Offered</th>
+            <th>Units Reported</th>
+        </tr>
+    </thead>
+    
+    {% for i in inventory %}
+    <tr class="datetime">
+	<td>{% ifchanged %} {{i.timestamp}} {% endifchanged %} </td>
+    </tr>
+    <tr>
+        <td>{{ i.beverage.name }}</td>
+        <td>{{ i.units_reported }}</td>
+    </tr>    
+    {% endfor %}
+</table>
+
+
+
+<a href="/update-inventory/{{location.location_number}}">Update Inventory</a>
+<a href="/record-order/{{location.location_number}}">Record Order</a>
+{% endblock %}
