@@ -3,7 +3,7 @@ from django.conf import settings
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
-from inventory.views import showLastInventory, updateInventory, test, recordOrder, orderHistory, inventoryHistory, startingInventory
+from inventory.views import showLastInventory, updateInventory, test, recordOrder, orderHistory, inventoryHistory, startingInventory, notes
 
 urlpatterns = patterns('',
     # Examples:
@@ -17,10 +17,10 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^location/(?P<location_number>[^\.]+)$', showLastInventory),
     url(r'^update-inventory/(?P<location_number>[^\.]+)$', updateInventory),
-    #url(r'^order-histort/(?P<location_number>[^\.]+)$', orderHistory),
-    #url(r'^inventory-history/(?P<location_number>[^\.]+)$', inventoryHistory),
-    #url(r'^starting-inventory/(?P<location_number>[^\.]+)$', startingInventory),
-    #url(r'^notes/(?P<location_number>[^\.]+)$', notes),
+    url(r'^order-history/(?P<location_number>[^\.]+)$', orderHistory),
+    url(r'^inventory-history/(?P<location_number>[^\.]+)$', inventoryHistory),
+    url(r'^starting-inventory/(?P<location_number>[^\.]+)$', startingInventory),
+    url(r'^notes/(?P<location_number>[^\.]+)$', notes),
     url(r'^record-order/(?P<location_number>[^\.]+)$', recordOrder),
     url(r'^bev/(?P<location_number>[^\.]+)$', test),
 )

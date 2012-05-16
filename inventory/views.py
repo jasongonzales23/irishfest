@@ -32,7 +32,6 @@ def showLastInventory(request, location_number):
     latest = datetime.datetime.combine(d, lt)
     
     inventory = Inventory.objects.filter(location=location).filter(timestamp__gte=latest)
-
     
     return render_to_response('location.html',
         {'location':location, 'inventory':inventory},
@@ -83,14 +82,23 @@ def recordOrder(request, location_number):
         )
     
 def orderHistory(request, location_number):
-    return HttpResponse('hello')
+    
+    location=Location.objects.get(location_number=location_number)
+    order=Order.objects.filter(location__location_number=location_number).order_by('-timestamp')
+    
+    return render_to_response('order-history.html',
+        {'location':location, 'order':order},
+        context_instance=RequestContext(request)
+    )
 
 def inventoryHistory(request, location_number):
     return HttpResponse('hello')
     
 def startingInventory(request, location_number):
     return HttpResponse('hello')
-    
+
+def notes(request, location_number):
+    return HttpResponse('hello')
 
 def test(request, location_number):
     location=Location.objects.get(location_number=location_number)

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block base_content %}
+<h1>{{ location.name }}</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Beverage Offered</th>
+            <th>Units Ordered</th>
+            <th>Date, Time</th>
+        </tr>
+    </thead>
+    
+    {% for o in order %}
+    <tr>
+        <td>{{ o.beverage.name }}</td>
+        <td>{{ o.units_ordered }}</td>
+        <td>{{ o.timestamp }}</td>
+    </tr>    
+    {% endfor %}
+</table>
+
+
+
+<a href="/update-inventory/{{location.location_number}}">Update Inventory</a>
+<a href="/record-order/{{location.location_number}}">Record Order</a>
+{% endblock %}
