@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block body_class %}{% endblock %}{% block body_id %}{% endblock %}
+{% block base_content %}
+<h1>{{ location.name }}</h1>
+<form action="/add-note/{{location.location_number}}" method="post">    
+    {%csrf_token%}
+    {{form.as_p}}
+<button type="submit">Save Note</button>
+</form>
+
+<a href="/notes/{{location.location_number}}">Cancel</a>
+{% endblock %}

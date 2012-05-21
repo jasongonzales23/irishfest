@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block page_title %}Login{% endblock %}
+{% block body_class %}user-account{% endblock %}
+{% block body_id %}login{% endblock %}
+{% block base_content %}
+    <div class="main-content">
+        <form method="post" action=".">
+        {% csrf_token %}
+        {{ form.as_p }}
+        
+          <input type="submit" value="{% trans 'Log in' %}" />
+          <input type="hidden" name="next" value="{{ next }}" />
+        </form>
+
+        <h2>{% trans "Forgot password" %}?</h2>
+        <p><a href="{% url auth_password_reset %}" class="buttonish">{% trans "Reset it" %}!</a></p>
+        <h2>{% trans "Not member" %}?</h2>
+        <p><a href="{% url registration_register %}"class="buttonish">{% trans "Register" %}!</a></p>
+    </div>
+{% endblock %}

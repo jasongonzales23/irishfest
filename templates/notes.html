@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block body_class %}{% endblock %}{% block body_id %}notes{% endblock %}
+{% block base_content %}
+
+<h1>{{ location.name }}</h1>
+<div class="table-wrap">    
+    {% for note in notes %}
+
+	<p class="timestamp">{{note.timestamp}}</p>
+        <p class="note">{{note.content}}</p>
+    {% endfor %}
+</div>
+<a class="buttonish" href="/add-note/{{location.location_number}}">Add Note</a>
+{% endblock %}

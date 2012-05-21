@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block body_class %}{% endblock %}{% block body_id %}starting-inventory{% endblock %}
+{% block base_content %}
+<h1>{{ location.name }}</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Beverage Offered</th>
+            <th>Units</th>
+        </tr>
+    </thead>
+    
+    {% for i in inventory %}
+    <tr>
+        <td>{{ i.beverage.name }}</td>
+        <td>{{ i.units }}</td>
+    </tr>    
+    {% endfor %}
+</table>
+
+{% endblock %}

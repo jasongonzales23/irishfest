@@ -10,7 +10,7 @@
     <title>{% block page_title %}Dublin Irish Festival{% endblock %}</title>
     <meta name="description" content="{% block meta_description %}{% endblock %}" />
     <meta name="author" content="{% block meta_author %}{% endblock %}" />
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1 maximum-scale=1, user-scalable=0">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css?v=2" />
     <script src="{{ STATIC_URL }}js/libs/modernizr-2.5.3.min.js"></script>
   </head>
@@ -19,12 +19,13 @@
 	    <header>
 		<div class="row">
 		    <ul id="nav">
-			<li><a href="/location/{{location.location_number}}">Last Reported Inventory</a></li>
-			<li><a href="/order-history/{{location.location_number}}">Order History</a></li>
-			<li><a href="/inventory-history/{{location.location_number}}">Inventory History</a></li>
-			<li><a href="/starting-inventory/{{location.location_number}}">Starting Inventory</a></li>
-			<li><a href="/notes/{{location.location_number}}">Notes</a></li>
-		    </ul>
+			<li class="last-inventory"><a href="/location/{{location.location_number}}">Last Reported Inventory</a></li>
+			<li class="order-history"><a href="/order-history/{{location.location_number}}">Order History</a></li>
+			<li class="inventory-history" ><a href="/inventory-history/{{location.location_number}}">Inventory History</a></li>
+			<li class="starting-inventory"><a href="/starting-inventory/{{location.location_number}}">Starting Inventory</a></li>
+			<li class="notes"><a href="/notes/{{location.location_number}}">Notes</a></li>
+			<li class="login"><a href="/accounts/logout/">Logout</a></li>
+		    </ul>		
 		    {% block header %}
 		    {% endblock %}
 		</div>

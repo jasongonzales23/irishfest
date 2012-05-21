@@ -3,7 +3,8 @@ from django.conf import settings
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
-from inventory.views import showLastInventory, updateInventory, test, recordOrder, orderHistory, inventoryHistory, startingInventory, notes
+from inventory.views import showLastInventory, updateInventory, test, recordOrder
+from inventory.views import orderHistory, inventoryHistory, startingInventory, notes, addNote, dailyReport
 
 urlpatterns = patterns('',
     # Examples:
@@ -15,14 +16,16 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^location/(?P<location_number>[^\.]+)$', showLastInventory),
     url(r'^update-inventory/(?P<location_number>[^\.]+)$', updateInventory),
     url(r'^order-history/(?P<location_number>[^\.]+)$', orderHistory),
     url(r'^inventory-history/(?P<location_number>[^\.]+)$', inventoryHistory),
     url(r'^starting-inventory/(?P<location_number>[^\.]+)$', startingInventory),
     url(r'^notes/(?P<location_number>[^\.]+)$', notes),
+    url(r'^add-note/(?P<location_number>[^\.]+)$', addNote),
     url(r'^record-order/(?P<location_number>[^\.]+)$', recordOrder),
-    url(r'^bev/(?P<location_number>[^\.]+)$', test),
+    url(r'^reports/daily', dailyReport),
 )
 
 if settings.DEBUG:

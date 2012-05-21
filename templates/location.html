@@ -1,29 +1,35 @@
 {% extends "base.html" %}
+{% block body_class %}{% endblock %}{% block body_id %}last-inventory{% endblock %}
 {% block base_content %}
+
 <h1>{{ location.name }}</h1>
+<div class="table-wrap">
+    <table>
+	<thead>
+	    <tr>
+		<th>Beverage Offered</th>
+		<th>Units Reported</th>
+		<th>Order When Below</th>
+		<th>Fill To Standard</th>
+	    </tr>
+	</thead>
+	
+	{% for i in inventory %}
+	<tr>
+	    <td>{{ i.beverage.name }}</td>
+	    <td>{{ i.units_reported }}</td>
+	    <td>{{ i.beverage.order_when_below }}</td>
+	    <td>{{ i.beverage.fill_to_standard }}</td>
+	</tr>    
+	{% endfor %}
+    </table>
+</div>
 
-<table>
-    <thead>
-        <tr>
-            <th>Beverage Offered</th>
-            <th>Units Reported</th>
-            <th>Order When Below</th>
-            <th>Fill To Standard</th>
-        </tr>
-    </thead>
-    
-    {% for i in inventory %}
-    <tr>
-        <td>{{ i.beverage.name }}</td>
-        <td>{{ i.units_reported }}</td>
-        <td>{{ i.beverage.order_when_below }}</td>
-        <td>{{ i.beverage.fill_to_standard }}</td>
-    </tr>    
-    {% endfor %}
-</table>
+{%if perms.inventory.add_inventory %}
+<a class="buttonish" href="/update-inventory/{{location.location_number}}">Update Inventory</a>
+{% endif %}
+{% if perms.inventory.add_order %}
+<a class="buttonish" href="/record-order/{{location.location_number}}">Record Order</a>
+{% endif %}
 
-
-
-<a href="/update-inventory/{{location.location_number}}">Update Inventory</a>
-<a href="/record-order/{{location.location_number}}">Record Order</a>
 {% endblock %}

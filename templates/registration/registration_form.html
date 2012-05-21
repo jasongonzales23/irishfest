@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block page_title %}Register{% endblock %}
+{% block body_class %}user-account{% endblock %}
+{% block body_id %}register{% endblock %}
+{% block base_content%}
+<div class="main-content">
+    <div class="column">
+	<h2>Create Your Local Town Crier Account</h2>
+	<form method="post" action=".">
+	    {% csrf_token %}
+	    {{ form.as_p }}
+	
+	  <input type="submit" value="{% trans 'Create My Account' %}" />
+	</form>
+    </div>
+    <div class="right-column">
+	<p>To successfully create an account please do the following:</p>
+	<ol>
+	    <li>Create a one-word username using only letters and numbers. Usernames are case-sensitive. Once you create a username you won't be able to change it--so pick a good one!</li>
+	    <li>Enter a valid email address</li>
+	    <li>Enter a secure password using letters, numbers and/or special characters.</li>
+	</ol>
+    </div>
+</div>
+{% endblock %}

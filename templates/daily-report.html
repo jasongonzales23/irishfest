@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block base_content %}
+{% block body_class %}{% endblock %}{% block body_id %}inventory-history{% endblock %}
+    <table>
+        <thead>
+            <tr>
+                <th>Bev</th>
+                <th>Num</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in inventory %}
+                <tr>
+                    <td>{{ i.beverage.name }}</td>
+                    <td>{{ i.units_reported }}</td>
+                    <td>{{ i.timestamp }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

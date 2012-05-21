@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block base_content %}
+
+{% if account %}
+
+<h3>{% trans "Your account has been successfully activated!" %}</h3>
+
+<p><a class="buttonish" href="{% url auth_login %}">{% trans "Log in" %}</a></p>
+
+{% else %}
+
+<p>{% trans "Account activation failed" %}</p>
+
+{% endif %}
+
+{% endblock %}
