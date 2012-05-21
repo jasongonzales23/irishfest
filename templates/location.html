@@ -15,6 +15,12 @@
 	</thead>
 	
 	{% for i in inventory %}
+
+	{% ifchanged %} 
+	<tr class="datetime">
+	    <td>{{i.timestamp}} </td>
+	</tr>
+	{% endifchanged %} 
 	<tr>
 	    <td>{{ i.beverage.name }}</td>
 	    <td>{{ i.units_reported }}</td>
