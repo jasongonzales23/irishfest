@@ -19,22 +19,22 @@ def showLastInventory(request, location_number):
     #change to get obj or 404
     try:
         location = Location.objects.get(location_number=location_number)
-        
+
     except ObjectDoesNotExist:
         return HttpResponse('no location for that')
-    
+
     latest = Inventory.objects.filter(location=location).latest('timestamp')
     latest = latest.timestamp
     d = latest.date()
     h = latest.hour
     m = latest.minute
     s = latest.second - 1
-    
+
     lt = datetime.time(h,m,s)
     latest = datetime.datetime.combine(d, lt)
-    
+
     inventory = Inventory.objects.filter(location=location).filter(timestamp__gte=latest)
-    
+
     return render_to_response('location.html',
         {'location':location, 'inventory':inventory},
         context_instance=RequestContext(request)

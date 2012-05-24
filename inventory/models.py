@@ -4,26 +4,30 @@ from django.forms import ModelForm
 from django import forms
 
 
+class Beverage(models.Model):
+    name=models.CharField(max_length=255)
+    
+    def __unicode__(self):
+        return self.name
+
 class Location(models.Model):
     name=models.CharField(max_length=255)
+    beverages = models.ManyToManyField(Beverage, related_name='locations')
     location_number=models.CharField(max_length=255)
     organization=models.CharField(max_length=255)
     
     def __unicode__(self):
         return self.name
-    
-class Beverage(models.Model):
-    name=models.CharField(max_length=255)
+
+class LocationStandard(models.Model):
+    beverage=models.ForeignKey(Beverage)
     location=models.ForeignKey(Location) #elim this or m2m
     fill_to_standard=models.IntegerField(max_length=10)
     order_when_below=models.IntegerField(max_length=10)
-    
-    def __unicode__(self):
-        return self.name
-    
+
 class Order(models.Model):
+    location=models.ForeignKey(Location) #elim this or m2m
     beverage=models.ForeignKey(Beverage)
-    location=models.ForeignKey(Location)
     units_ordered=models.IntegerField(max_length=10, default=0)
     order_delivered=models.BooleanField(default=False)
     timestamp=models.DateTimeField(auto_now=True)
@@ -40,7 +44,7 @@ class StartingInventory(models.Model):
     units=models.IntegerField()
 
 class Inventory(models.Model):
-    location=models.ForeignKey(Location)
+    location=models.ForeignKey(Location) #elim this or m2m
     beverage=models.ForeignKey(Beverage)
     units_reported=models.IntegerField(max_length=10, default=0)
     timestamp=models.DateTimeField(auto_now=True)
@@ -60,10 +64,10 @@ class NoteForm(ModelForm):
     class Meta:
         model=Note
         fields=('content',)
-    
+"""
 class DailyTotals(models.Model):
     date=models.DateTimeField()
     beverage=models.CharField(max_length=255)
     daily_total=models.IntegerField()
     grand_total=models.IntegerField()
-    
+"""
