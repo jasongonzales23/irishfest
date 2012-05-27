@@ -4,7 +4,9 @@
 <h1>{{location.name}}</h1>
 <form action="/update-inventory/{{location.location_number}}" method="post">
     {% csrf_token %}
-    {{ formset.as_p }}
+    <ul>
+      {{ formset.as_ul }}
+    </ul>
     <input type="submit" value="Update Inventory"/>
 </form>
 

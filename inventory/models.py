@@ -38,12 +38,13 @@ class OrderForm(ModelForm):
     class Meta:
         model=Beverage
         fields=('name', 'id')
-        widgets = {
-                'name': TextInput(attrs={'disabled':'disabled'}),
-                }
-        #def __init__(self, *args, **kwargs):
-            #super(Order, self).__init__(*args, **kwargs)
-            #self.fields['units_ordered'].widget.attrs['class'] = 'myclass'
+
+    def __init__(self, *args, **kwargs):
+        super(OrderForm, self).__init__(*args, **kwargs)
+        self.fields['units_ordered'].label = ''
+        self.fields['units_ordered'].widget.attrs = {'class':'number'}
+        self.fields['name'].widget.attrs['readonly'] = True
+        self.fields['name'].label = ''
 
 class Inventory(models.Model):
     location=models.ForeignKey(Location) #elim this or m2m
@@ -56,6 +57,16 @@ class InventoryForm(ModelForm):
     class Meta:
         model=Beverage
         fields=('name', 'id')
+        #widgets = {
+                #'name': TextInput(attrs={'disabled':'disabled'}),
+                #}
+
+    def __init__(self, *args, **kwargs):
+        super(InventoryForm, self).__init__(*args, **kwargs)
+        self.fields['units_reported'].label = ''
+        self.fields['units_reported'].widget.attrs = {'class':'number'}
+        self.fields['name'].widget.attrs['readonly'] = True
+        self.fields['name'].label = ''
 
 class Note(models.Model):
     location=models.ForeignKey(Location)
