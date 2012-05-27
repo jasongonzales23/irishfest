@@ -16,17 +16,21 @@
 	
 	{% for i in inventory %}
 
-	{% ifchanged %} 
+	{% ifchanged %}
 	<tr class="datetime">
 	    <td>{{i.timestamp}} </td>
 	</tr>
-	{% endifchanged %} 
+	{% endifchanged %}
 	<tr>
 	    <td>{{ i.beverage.name }}</td>
-	    <td>{{ i.units_reported }}</td>
-	    <td>{{ i.beverage.order_when_below }}</td>
-	    <td>{{ i.beverage.fill_to_standard }}</td>
-	</tr>    
+      <td>{{ i.units_reported }}</td>
+      {% for ls in i.beverage.locationstandard_set.all %}
+      {% if ls.location == location %}
+      <td> {{ ls.order_when_below }}</td>
+      <td>{{ ls.fill_to_standard }}</td>
+      {% endif %}
+      {% endfor %}
+	</tr>
 	{% endfor %}
     </table>
 </div>

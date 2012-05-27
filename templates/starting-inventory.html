@@ -10,12 +10,11 @@
             <th>Units</th>
         </tr>
     </thead>
-    
     {% for i in inventory %}
     <tr>
         <td>{{ i.beverage.name }}</td>
-        <td>{{ i.units }}</td>
-    </tr>    
+        <td>{{ i.start_units }}</td>
+    </tr>
     {% endfor %}
 </table>
 
