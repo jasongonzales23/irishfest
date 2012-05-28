@@ -18,8 +18,11 @@
 
 	{% ifchanged %}
 	<tr class="datetime">
-	    <td>{{i.timestamp}} </td>
-	</tr>
+    <td colspan="4"><b>Reported At:</b> {{i.timestamp|date:"fA l F j, Y" }}</td>
+  </tr>
+  <tr class="reporter">
+    <td colspan="4"><b>Reported By:</b> {{ i.user.first_name}} {{ i.user.last_name}}</td>
+  </tr>
 	{% endifchanged %}
 	<tr>
 	    <td>{{ i.beverage.name }}</td>

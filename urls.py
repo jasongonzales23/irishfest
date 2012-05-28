@@ -5,6 +5,7 @@ from django.contrib import admin
 admin.autodiscover()
 from inventory.views import showLastInventory, updateInventory, test, recordOrder
 from inventory.views import orderHistory, inventoryHistory, startingInventory, notes, addNote, dailyReport
+from inventory.views import recordDelivery
 
 urlpatterns = patterns('',
     # Examples:
@@ -25,6 +26,7 @@ urlpatterns = patterns('',
     url(r'^notes/(?P<location_number>[^\.]+)$', notes),
     url(r'^add-note/(?P<location_number>[^\.]+)$', addNote),
     url(r'^record-order/(?P<location_number>[^\.]+)$', recordOrder),
+    url(r'^record-delivery/(?P<location_number>[^\.]+)/(?P<order_id>[^\.]+)/(?P<order_delivered>[^\.]+)$', recordDelivery),
     url(r'^reports/daily', dailyReport),
 )
 

@@ -13,15 +13,18 @@
 	</thead>
 	
 	{% for i in inventory %}
-	{% ifchanged %} 
-	<tr class="datetime">
-	    <td>{{i.timestamp}} </td>
-	</tr>
+  {% ifchanged %}
+  <tr class="datetime"> 
+    <td colspan="4"><b>Reported At:</b> {{i.timestamp|date:"fA l F j, Y" }}</td>
+  </tr>
+  <tr class="reporter">
+    <td colspan="4"><b>Reported By:</b> {{user.first_name}} {{user.last_name}}</td>
+  </tr>
 	{% endifchanged %} 
 	<tr>
 	    <td>{{ i.beverage.name }}</td>
 	    <td>{{ i.units_reported }}</td>
-	</tr>    
+	</tr>
 	{% endfor %}
     </table>
 </div>

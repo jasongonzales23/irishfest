@@ -14,6 +14,7 @@ class LocationStandardInlineAdmin(admin.TabularInline):
 
 class BeverageAdmin(admin.ModelAdmin):
     list_display = ('name',)
+    extra = 5
 
 class LocationAdmin(admin.ModelAdmin):
     list_display = ('name', 'location_number', 'organization',)
@@ -35,9 +36,11 @@ class InventoryAdmin(admin.ModelAdmin):
 class NoteAdmin(admin.ModelAdmin):
     list_display = ('location', 'timestamp', )
 
+#class OrderAdmin(admin.ModelAdmin):
+    #list_display = ('location', 
+
 admin.site.register(Location, LocationAdmin)
 admin.site.register(Beverage, BeverageAdmin)
 admin.site.register(LocationStandard, LocationStandardAdmin)
 admin.site.register(Inventory, InventoryAdmin)
 admin.site.register(Note, NoteAdmin)
-

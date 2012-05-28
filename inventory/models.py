@@ -2,7 +2,12 @@ from django.db import models
 from datetime import datetime
 from django.forms import ModelForm
 from django import forms
-from django.forms.widgets import TextInput
+from django.forms.widgets import TextInput, Input
+from django.contrib.auth.models import User
+
+
+class Html5NumInput(Input):
+    input_type = 'number'
 
 class Beverage(models.Model):
     name=models.CharField(max_length=255)
@@ -31,10 +36,11 @@ class Order(models.Model):
     beverage=models.ForeignKey(Beverage)
     units_ordered=models.IntegerField(max_length=10, default=0)
     order_delivered=models.BooleanField(default=False)
-    timestamp=models.DateTimeField(auto_now=True)
+    timestamp=models.DateTimeField(auto_now_add=True)
+    user=models.ForeignKey(User)
 
 class OrderForm(ModelForm):
-    units_ordered=forms.IntegerField(initial=0)
+    units_ordered=forms.IntegerField(initial=0, widget=Html5NumInput)
     class Meta:
         model=Beverage
         fields=('name', 'id')
@@ -51,20 +57,20 @@ class Inventory(models.Model):
     beverage=models.ForeignKey(Beverage)
     units_reported=models.IntegerField(max_length=10, default=0)
     timestamp=models.DateTimeField(auto_now=True)
+    user=models.ForeignKey(User)
+
 
 class InventoryForm(ModelForm):
-    units_reported=forms.IntegerField(required=True, initial=0)
+    units_reported=forms.IntegerField(required=True, initial=0, widget=Html5NumInput)
     class Meta:
         model=Beverage
         fields=('name', 'id')
-        #widgets = {
-                #'name': TextInput(attrs={'disabled':'disabled'}),
-                #}
 
     def __init__(self, *args, **kwargs):
         super(InventoryForm, self).__init__(*args, **kwargs)
         self.fields['units_reported'].label = ''
         self.fields['units_reported'].widget.attrs = {'class':'number'}
+        self.fields['name'].widget.attrs = {'class':'labelish'}
         self.fields['name'].widget.attrs['readonly'] = True
         self.fields['name'].label = ''
 
@@ -72,6 +78,7 @@ class Note(models.Model):
     location=models.ForeignKey(Location)
     timestamp=models.DateTimeField(auto_now=True)
     content=models.TextField(max_length=50000)
+    user=models.ForeignKey(User)
 
 class NoteForm(ModelForm):
     class Meta:

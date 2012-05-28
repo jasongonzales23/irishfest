@@ -3,17 +3,18 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template.context import RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from inventory.models import Beverage, Location, Inventory, Note, Order, InventoryForm, OrderForm, NoteForm
 from inventory.models import LocationStandard
 from django.template.defaultfilters import slugify
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django import forms
+
 from django.forms.models import formset_factory, modelformset_factory
 import models
 import datetime
 from django.contrib.auth.decorators import login_required
-#from django.db.models import Max
 
 @login_required
 def showLastInventory(request, location_number):
@@ -35,9 +36,6 @@ def showLastInventory(request, location_number):
     latest = datetime.datetime.combine(d, lt)
     inventory = Inventory.objects.filter(location=location).filter(timestamp__gte=latest).select_related()
 
-    #stds = LocationStandard.objects.filter(location=location)
-    #bev = location.beverages.select_related()
-
     return render_to_response('location.html',
             {'location':location, 'inventory':inventory},
         context_instance=RequestContext(request)
@@ -54,7 +52,7 @@ def updateInventory(request, location_number):
             for form in formset:
                 beverage=form.save(commit=False)
                 units_reported=form.cleaned_data['units_reported']
-                Inventory(location=location, beverage=beverage, units_reported=units_reported).save()
+                Inventory(location=location, beverage=beverage, units_reported=units_reported, user=request.user).save()
 
             return HttpResponseRedirect('/location/' + location_number )
         else:
@@ -83,7 +81,7 @@ def recordOrder(request, location_number):
             for form in formset:
                 beverage=form.save(commit=False)
                 units_ordered=form.cleaned_data['units_ordered']
-                Order(location=location, beverage=beverage, units_ordered=units_ordered).save()
+                Order(location=location, beverage=beverage, units_ordered=units_ordered, user=request.user).save()
             return HttpResponseRedirect('/location/' + location_number )
         else:
             return render_to_response('record-order.html',
@@ -146,7 +144,7 @@ def addNote(request, location_number):
         if form.is_valid():
             note=form.save(commit=False)
             content=form.cleaned_data['content']
-            Note(content=content, location=location).save()
+            Note(content=content, location=location, user=request.user).save()
 
         return HttpResponseRedirect('/notes/' + location_number )
     else:
@@ -155,6 +153,20 @@ def addNote(request, location_number):
             {'form': form, 'location':location},
             context_instance=RequestContext(request)
         )
+
+def recordDelivery(request, location_number, order_id, order_delivered):
+    #put a try catch of some kind in here
+    location=Location.objects.get(location_number=location_number)
+    order = Order.objects.get(pk=order_id)
+    if request.method=='GET':
+        if order_delivered == 'True':
+            tog = False
+        else:
+            tog = True
+
+        order.order_delivered=tog
+        order.save()
+        return HttpResponse(tog)
 
 def dailyReport(request):
 
