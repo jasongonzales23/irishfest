@@ -27,7 +27,7 @@ urlpatterns = patterns('',
     url(r'^add-note/(?P<location_number>[^\.]+)$', addNote),
     url(r'^record-order/(?P<location_number>[^\.]+)$', recordOrder),
     url(r'^record-delivery/(?P<location_number>[^\.]+)/(?P<order_id>[^\.]+)/(?P<order_delivered>[^\.]+)$', recordDelivery),
-    url(r'^reports/daily', dailyReport),
+    url(r'^reports', dailyReport),
 )
 
 if settings.DEBUG:

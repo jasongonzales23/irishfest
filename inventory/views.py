@@ -170,8 +170,8 @@ def recordDelivery(request, location_number, order_id, order_delivered):
 
 def dailyReport(request):
 
-    inventory = Inventory.objects.all().order_by('beverage')
-
+   order = Order.objects.all().order_by('beverage')
+    
     return render_to_response('daily-report.html',
         {'inventory':inventory, },
         context_instance=RequestContext(request)
