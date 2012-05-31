@@ -1,6 +1,27 @@
 {% extends "base.html" %}
 {% block base_content %}
 {% block body_class %}{% endblock %}{% block body_id %}{% endblock %}
-
-
+    <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td></td>
+            {% for beverage in beverages %}
+            <th>{{ beverage }}</th>
+            {% endfor %}
+          </tr>
+         {% for location, row in grid %}
+          <tr>
+            <th>{{ location }}</th>
+            {% for total in row %}
+            <td>{{ total }}</td>
+            {% endfor %}
+          </tr>
+         {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
