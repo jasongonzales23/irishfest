@@ -14,6 +14,7 @@ from django import forms
 from django.forms.models import formset_factory, modelformset_factory
 import models
 import datetime
+from datetime import datetime, date, time
 from django.contrib.auth.decorators import login_required
 
 import itertools
@@ -34,8 +35,8 @@ def showLastInventory(request, location_number):
     m = latest.minute
     s = latest.second - 1
 
-    lt = datetime.time(h,m,s)
-    latest = datetime.datetime.combine(d, lt)
+    lt = time(h,m,s)
+    latest = datetime.combine(d, lt)
     inventory = Inventory.objects.filter(location=location).filter(timestamp__gte=latest).select_related()
 
     return render_to_response('location.html',
@@ -170,7 +171,15 @@ def recordDelivery(request, location_number, order_id, order_delivered):
         order.save()
         return HttpResponse(tog)
 
-def dailyReport(request):
+def reportList(request):
+    orders = Order.objects.all().order_by('timestamp')
+
+    return render_to_response('reportList.html',
+            {'orders':orders,},
+            context_instance=RequestContext(request)
+        )
+
+def report(request):
     """
     Build a 2 dimensional array of total units ordered for each beverage in
     each location.
@@ -203,11 +212,54 @@ def dailyReport(request):
     )
 
 
-def test(request, location_number):
-    location=Location.objects.get(location_number=location_number)
-    bev=Beverage.objects.filter(location__location_number=location_number)
+def dailyReport(request, year, month, day):
+    """
+    Build a 2 dimensional array of total units ordered for each beverage in
+    each location.
 
-    return render_to_response('test.html',
-        {'bev':bev, 'location':location, 'orders':orders},
+    Returns a two-part tuple of the grid and beverages queryset.
+    """
+    locations = Location.objects.order_by('name')
+    beverages = Beverage.objects.order_by('name')
+    
+    year = int(year)
+    month = int(month)
+    day = int(day)
+
+    print datetime(year,month,day)
+    orders = Order.objects.filter(timestamp__year=year,timestamp__month=month,timestamp__day=day).values('location', 'beverage').annotate(total_units_ordered=Sum('units_ordered'))
+
+    totals = {}
+
+    for order in orders:
+        location = totals.setdefault(order['location'], {})
+        location[order['beverage']] = order['total_units_ordered']
+        print location[order['beverage']]
+
+    grid = []
+    for location in locations:
+       row = []
+       grid.append((location, row))
+       for beverage in beverages:
+           row.append(totals.get(location.pk, {}).get(beverage.pk, 0))
+
+    #return grid, beverages
+    return render_to_response('daily-report.html',
+            {'grid':grid, 'beverages':beverages},
         context_instance=RequestContext(request)
     )
+
+def latestOrders(request):
+
+    return render_to_response('latest-report.html',
+            {'reports':reports,},
+            context_instance=RequestContext(request)
+    )
+
+def latestInventories(request):
+
+    return render_to_response('latest-report.html',
+            {'reports':reports,},
+            context_instance=RequestContext(request)
+    )
+

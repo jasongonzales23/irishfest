@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block base_content %}
+{% block body_class %}{% endblock %}{% block body_id %}{% endblock %}
+
+{% for order in orders %}
+{% ifchanged %}
+<a
+  href="/report/{{order.timestamp|date:"Y"}}/{{order.timestamp|date:"m"}}/{{order.timestamp|date:"d"}}">{{ order.timestamp|date:"l" }}</a>
+{% endifchanged %}
+{% endfor %}
+
+<h3>Festival Total</h3>
+<a href="/report/total">Click here</a>
+{% endblock %}
+
+
