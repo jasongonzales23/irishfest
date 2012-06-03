@@ -3,9 +3,10 @@ from django.conf import settings
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
-from inventory.views import showLastInventory, updateInventory, test, recordOrder
+from inventory.views import showLastInventory, updateInventory,recordOrder
 from inventory.views import orderHistory, inventoryHistory,startingInventory, notes, addNote
 from inventory.views import recordDelivery, reportList, report, dailyReport
+from inventory.views import latestInventories, latestOrders
 
 urlpatterns = patterns('',
     # Examples:
@@ -27,9 +28,11 @@ urlpatterns = patterns('',
     url(r'^add-note/(?P<location_number>[^\.]+)$', addNote),
     url(r'^record-order/(?P<location_number>[^\.]+)$', recordOrder),
     url(r'^record-delivery/(?P<location_number>[^\.]+)/(?P<order_id>[^\.]+)/(?P<order_delivered>[^\.]+)$', recordDelivery),
+    url(r'^report-list/', reportList),
     url(r'^report/(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/$',dailyReport),
     url(r'^report/total', report),
-    url(r'^report-list/', reportList),
+    url(r'^report/latest-inventories', latestInventories),
+    url(r'^report/latest-orders', latestOrders),
 )
 
 if settings.DEBUG:

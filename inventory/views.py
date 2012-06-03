@@ -196,15 +196,15 @@ def report(request):
     for order in orders:
         location = totals.setdefault(order['location'], {})
         location[order['beverage']] = order['total_units_ordered']
-        print location[order['beverage']]
+        #print location[order['beverage']]
 
     grid = []
     for location in locations:
        row = []
-       grid.append((location, row))
+       grid.append((location, row, msg))
        for beverage in beverages:
            row.append(totals.get(location.pk, {}).get(beverage.pk, 0))
-
+    print grid
     #return grid, beverages
     return render_to_response('daily-report.html',
             {'grid':grid, 'beverages':beverages},
@@ -226,7 +226,6 @@ def dailyReport(request, year, month, day):
     month = int(month)
     day = int(day)
 
-    print datetime(year,month,day)
     orders = Order.objects.filter(timestamp__year=year,timestamp__month=month,timestamp__day=day).values('location', 'beverage').annotate(total_units_ordered=Sum('units_ordered'))
 
     totals = {}
@@ -234,7 +233,7 @@ def dailyReport(request, year, month, day):
     for order in orders:
         location = totals.setdefault(order['location'], {})
         location[order['beverage']] = order['total_units_ordered']
-        print location[order['beverage']]
+        #print location[order['beverage']]
 
     grid = []
     for location in locations:
@@ -243,6 +242,7 @@ def dailyReport(request, year, month, day):
        for beverage in beverages:
            row.append(totals.get(location.pk, {}).get(beverage.pk, 0))
 
+    #print grid
     #return grid, beverages
     return render_to_response('daily-report.html',
             {'grid':grid, 'beverages':beverages},
@@ -257,9 +257,33 @@ def latestOrders(request):
     )
 
 def latestInventories(request):
+    locations = Location.objects.all().order_by('name')
+    inventories = Inventory.objects.all().order_by('timestamp')
+    grid = []
+    for location in locations:
+        row = []
+        grid.append((location, row))
+        for inventory in inventories:
+            if inventory.location == location:
+                row.append((inventory.beverage, inventory.units_reported))
+
+    print grid
+    """
+    latest = Inventory.objects.all().latest('timestamp')
+    latest = latest.timestamp
+    d = latest.date()
+    h = latest.hour
+    m = latest.minute
+    s = latest.second - 1
+
+    lt = time(h,m,s)
+    latest = datetime.combine(d, lt)
+    """
+    #inventories = Inventory.objects.all().filter(timestamp__gte=latest).select_related()
+
 
     return render_to_response('latest-report.html',
-            {'reports':reports,},
+            {'grid':grid},
             context_instance=RequestContext(request)
     )
 
