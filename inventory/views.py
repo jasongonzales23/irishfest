@@ -8,13 +8,14 @@ from inventory.models import Beverage, Location, Inventory, Note, Order, Invento
 from inventory.models import LocationStandard
 from django.template.defaultfilters import slugify
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Q, Count, Sum
+from django.db.models import Q, Count, Sum, Max, Min
 from django import forms
 
 from django.forms.models import formset_factory, modelformset_factory
 import models
 import datetime
 from datetime import datetime, date, time
+from datetime import timedelta
 from django.contrib.auth.decorators import login_required
 
 import itertools
@@ -38,7 +39,7 @@ def showLastInventory(request, location_number):
     lt = time(h,m,s)
     latest = datetime.combine(d, lt)
     inventory = Inventory.objects.filter(location=location).filter(timestamp__gte=latest).select_related()
-
+    
     return render_to_response('location.html',
             {'location':location, 'inventory':inventory},
         context_instance=RequestContext(request)
@@ -201,7 +202,7 @@ def report(request):
     grid = []
     for location in locations:
        row = []
-       grid.append((location, row, msg))
+       grid.append((location, row))
        for beverage in beverages:
            row.append(totals.get(location.pk, {}).get(beverage.pk, 0))
     print grid
@@ -257,29 +258,22 @@ def latestOrders(request):
     )
 
 def latestInventories(request):
-    locations = Location.objects.all().order_by('name')
-    inventories = Inventory.objects.all().order_by('timestamp')
+    locations = Location.objects.all().order_by('name').annotate(most_recent=Max('inventory__timestamp'))
+    inventories = Inventory.objects.annotate(most_recent=Max('timestamp')).order_by('-timestamp')
+    newest = Inventory.objects.filter(timestamp__in=[l.most_recent for l in locations])
+
     grid = []
     for location in locations:
         row = []
         grid.append((location, row))
-        for inventory in inventories:
-            if inventory.location == location:
-                row.append((inventory.beverage, inventory.units_reported))
+        for new in newest:
+            if new.location == location:
+                delt = new.timestamp - timedelta(seconds=2)
 
-    print grid
-    """
-    latest = Inventory.objects.all().latest('timestamp')
-    latest = latest.timestamp
-    d = latest.date()
-    h = latest.hour
-    m = latest.minute
-    s = latest.second - 1
-
-    lt = time(h,m,s)
-    latest = datetime.combine(d, lt)
-    """
-    #inventories = Inventory.objects.all().filter(timestamp__gte=latest).select_related()
+                row.append((new.beverage, new.units_reported, new.timestamp, new.location))
+                for inv in inventories:
+                    if inv.timestamp > delt and inv.location == location:
+                        row.append((inv.beverage, inv.units_reported, inv.timestamp, inv.location))
 
 
     return render_to_response('latest-report.html',

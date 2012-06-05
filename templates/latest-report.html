@@ -10,6 +10,8 @@
     <tr>
       <th>Beverage Offered</th>
       <th>Units Reported</th>
+      <th>Other</th>
+      <th>Other</th>
       <!--<th>Order When Below</th>-->
       <!--<th>Fill To Standard</th>-->
     </tr>
@@ -22,8 +24,14 @@
       </td>
       <td>
         {{ name.1 }}
-     </td>
-    </tr>
+      </td>
+      <td>
+        {{ name.2 }}
+      </td>
+      <td>
+        {{ name.3 }}
+    </td>   
+  </tr>
     {% endfor %}
   </tbody>
 </table>
