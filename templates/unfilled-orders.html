@@ -5,15 +5,12 @@
 {% for location, beverage, time, reporter in grid %}
 
 <h1>{{ location }}</h1>
-<p class="datetime"><b>Reported At: </b>{{time.0}}</p>
-<p class="reporter"><b>Reported By: </b>{{reporter.0.first_name}} {{reporter.0.last_name}}</p>
 <table>
   <thead>
     <tr>
       <th>Beverage Offered</th>
-      <th>Units Reported</th>
-      <th>Order When Below</th>
-      <th>Fill To Standard</th>
+      <th>Order Placed Time</th>
+      <th>Order Delivered</th>
     </tr>
   </thead>
   <tbody>
@@ -28,12 +25,11 @@
       <td>
         {{ thing.2 }}
       </td>
-      <td>
-        {{ thing.3 }}
-    </td>
   </tr>
     {% endfor %}
   </tbody>
 </table>
 {% endfor %}
 {% endblock %}
+
+

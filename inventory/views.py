@@ -197,7 +197,6 @@ def report(request):
     for order in orders:
         location = totals.setdefault(order['location'], {})
         location[order['beverage']] = order['total_units_ordered']
-        #print location[order['beverage']]
 
     grid = []
     for location in locations:
@@ -243,17 +242,33 @@ def dailyReport(request, year, month, day):
        for beverage in beverages:
            row.append(totals.get(location.pk, {}).get(beverage.pk, 0))
 
-    #print grid
-    #return grid, beverages
     return render_to_response('daily-report.html',
             {'grid':grid, 'beverages':beverages},
         context_instance=RequestContext(request)
     )
 
 def latestOrders(request):
+    locations = Location.objects.all().order_by('name').annotate(most_recent=Max('order__timestamp'))
+    orders = Order.objects.annotate(most_recent=Max('timestamp')).order_by('-timestamp')
+    newest = Order.objects.filter(timestamp__in=[l.most_recent for l in locations])
 
-    return render_to_response('latest-report.html',
-            {'reports':reports,},
+    grid = []
+    for location in locations:
+        row = []
+        time = []
+        reporter = []
+        grid.append((location, row, time, reporter))
+        for new in newest:
+            if new.location == location:
+                delt = new.timestamp - timedelta(seconds=2)
+                time.append((new.timestamp))
+                reporter.append((new.user))
+                for order in orders:
+                    if order.timestamp > delt and order.location == location:
+                        row.append((order.beverage, order.units_ordered, order.order_delivered))
+
+    return render_to_response('latest-orders.html',
+            {'grid':grid,},
             context_instance=RequestContext(request)
     )
 
@@ -261,22 +276,44 @@ def latestInventories(request):
     locations = Location.objects.all().order_by('name').annotate(most_recent=Max('inventory__timestamp'))
     inventories = Inventory.objects.annotate(most_recent=Max('timestamp')).order_by('-timestamp')
     newest = Inventory.objects.filter(timestamp__in=[l.most_recent for l in locations])
+    standards = LocationStandard.objects.all()
 
     grid = []
     for location in locations:
         row = []
-        grid.append((location, row))
+        time = []
+        reporter = []
+        grid.append((location, row, time, reporter))
         for new in newest:
             if new.location == location:
                 delt = new.timestamp - timedelta(seconds=2)
-
-                row.append((new.beverage, new.units_reported, new.timestamp, new.location))
+                time.append((new.timestamp))
+                reporter.append((new.user))
                 for inv in inventories:
                     if inv.timestamp > delt and inv.location == location:
-                        row.append((inv.beverage, inv.units_reported, inv.timestamp, inv.location))
-
+                        for standard in standards:
+                            if standard.beverage == inv.beverage  and standard.location == location:
+                                row.append((inv.beverage, inv.units_reported, standard.order_when_below, standard.fill_to_standard))
 
     return render_to_response('latest-report.html',
+            {'grid':grid},
+            context_instance=RequestContext(request)
+    )
+
+
+def unfilledOrders(request):
+    locations = Location.objects.all().order_by('name')
+    orders = Order.objects.all().order_by('location__name')
+    
+    grid = []
+    for location in locations:
+        row = []
+        grid.append(( location.name, row))
+        for order in orders:
+            if order.location == location and order.order_delivered == False:
+                row.append((order.beverage, order.timestamp, order.order_delivered,))
+
+    return render_to_response('unfilled-orders.html',
             {'grid':grid},
             context_instance=RequestContext(request)
     )

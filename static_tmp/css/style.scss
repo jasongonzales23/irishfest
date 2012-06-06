@@ -340,8 +340,12 @@ tr.datetime, tr.reporter {
     border:none;
 }
 
-.datetime td, .reporter td  {
+.datetime td, .reporter td, {
     padding:30px 0 8px 5px;
+    color:#E26E0A;
+}
+
+.datetime, .reporter  {
     color:#E26E0A;
 }
 

@@ -6,7 +6,7 @@ admin.autodiscover()
 from inventory.views import showLastInventory, updateInventory,recordOrder
 from inventory.views import orderHistory, inventoryHistory,startingInventory, notes, addNote
 from inventory.views import recordDelivery, reportList, report, dailyReport
-from inventory.views import latestInventories, latestOrders
+from inventory.views import latestInventories, latestOrders, unfilledOrders
 
 urlpatterns = patterns('',
     # Examples:
@@ -17,6 +17,7 @@ urlpatterns = patterns('',
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
+    url(r'^admin_tools/', include('admin_tools.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^location/(?P<location_number>[^\.]+)$', showLastInventory),
@@ -33,6 +34,7 @@ urlpatterns = patterns('',
     url(r'^report/total', report),
     url(r'^report/latest-inventories', latestInventories),
     url(r'^report/latest-orders', latestOrders),
+    url(r'^report/unfilled-orders', unfilledOrders),
 )
 
 if settings.DEBUG:
@@ -46,4 +48,4 @@ if settings.DEBUG:
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
     url(r'', include('django.contrib.staticfiles.urls')),
-    ) 
+    )
