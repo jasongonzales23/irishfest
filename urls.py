@@ -7,6 +7,7 @@ from inventory.views import showLastInventory, updateInventory,recordOrder
 from inventory.views import orderHistory, inventoryHistory,startingInventory, notes, addNote
 from inventory.views import recordDelivery, reportList, report, dailyReport
 from inventory.views import latestInventories, latestOrders, unfilledOrders
+from inventory.views import csvTotal, csvDailyReport
 
 urlpatterns = patterns('',
     # Examples:
@@ -35,6 +36,8 @@ urlpatterns = patterns('',
     url(r'^report/latest-inventories', latestInventories),
     url(r'^report/latest-orders', latestOrders),
     url(r'^report/unfilled-orders', unfilledOrders),
+    url(r'^csv/report/total', csvTotal),
+    url(r'^csv/report/(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/$',csvDailyReport),
 )
 
 if settings.DEBUG:

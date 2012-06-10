@@ -190,7 +190,7 @@ def report(request):
 
     Returns a two-part tuple of the grid and beverages queryset.
     """
-    locations = Location.objects.order_by('name')
+    locations = Location.objects.order_by('location_number')
     beverages = Beverage.objects.order_by('name')
 
     orders = Order.objects.values('location', 'beverage').annotate(total_units_ordered=Sum('units_ordered'))
@@ -222,7 +222,7 @@ def dailyReport(request, year, month, day):
 
     Returns a two-part tuple of the grid and beverages queryset.
     """
-    locations = Location.objects.order_by('name')
+    locations = Location.objects.order_by('location_number')
     beverages = Beverage.objects.order_by('name')
     
     year = int(year)
@@ -320,4 +320,76 @@ def unfilledOrders(request):
             {'grid':grid},
             context_instance=RequestContext(request)
     )
+
+
+import csv
+
+def csvTotal(request):
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment;filename=export.csv'
+
+    writer = csv.writer(response)
+
+    locations = Location.objects.order_by('location_number')
+    beverages = Beverage.objects.order_by('name')
+
+    orders = Order.objects.values('location', 'beverage').annotate(total_units_ordered=Sum('units_ordered'))
+
+    totals = {}
+
+    bevRow = ['Location #','Location',]
+    for beverage in beverages:
+        bevRow.append(beverage.name)
+    writer.writerow(bevRow)
+
+    for order in orders:
+        location = totals.setdefault(order['location'], {})
+        location[order['beverage']] = order['total_units_ordered']
+
+    for location in locations:
+        row = []
+        row.append(location.location_number)
+        row.append(location)
+        for beverage in beverages:
+            row.append(totals.get(location.pk, {}).get(beverage.pk, 0))
+        writer.writerow(row)
+
+    return response
+
+def csvDailyReport(request, year, month, day):
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment;filename=export.csv'
+
+    writer = csv.writer(response)
+
+    locations = Location.objects.order_by('location_number')
+    beverages = Beverage.objects.order_by('name')
+
+    year = int(year)
+    month = int(month)
+    day = int(day)
+
+    orders = Order.objects.filter(timestamp__year=year,timestamp__month=month,timestamp__day=day).values('location', 'beverage').annotate(total_units_ordered=Sum('units_ordered'))
+
+    totals = {}
+
+    bevRow = ['Location #','Location',]
+    for beverage in beverages:
+        bevRow.append(beverage.name)
+
+    writer.writerow(bevRow)
+
+    for order in orders:
+        location = totals.setdefault(order['location'], {})
+        location[order['beverage']] = order['total_units_ordered']
+
+    for location in locations:
+        row = []
+        row.append(location.location_number)
+        row.append(location)
+        for beverage in beverages:
+            row.append(totals.get(location.pk, {}).get(beverage.pk, 0))
+        writer.writerow(row)
+
+    return response
 
