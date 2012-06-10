@@ -2,7 +2,8 @@
 {% block body_class %}{% endblock %}{% block body_id %}order-history{% endblock %}
 {% block base_content %}
 
-<h1>{{ location.name }}</h1>
+<h1>{{ location.name }} - {{ location.location_number }}</h1>
+<h3 class="orgName">{{ location.organization }}</h3>
 
 <div class="table-wrap">
     <table class="order-table">
@@ -10,7 +11,7 @@
 	    <tr>
 		<th>Beverage Offered</th>
 		<th>Units Ordered</th>
-		<th>Order Delivered</th>
+		<th>Order Sent</th>
 	    </tr>
 	</thead>
 	
@@ -23,10 +24,18 @@
     <td colspan="4"><b>Reported By:</b> {{ o.user.first_name}} {{ o.user.last_name}}</td>
   </tr>
 	{% endifchanged %}
-	<tr>
+  <tr>
 	    <td>{{ o.beverage.name }}</td>
-	    <td>{{ o.units_ordered }}</td>
-      <td class="deliver" data-deliver="/record-delivery/{{location.location_number}}/{{o.pk}}/{{o.order_delivered}}">{{o.order_delivered}}</td>
+      <td>{{ o.units_ordered }}</td>
+      {% if perms.inventory.add_order %}
+      {% if o.order_delivered == False %}
+        <td></td>
+        {% else%}
+        <td class="deliver" data-deliver="/record-delivery/{{location.location_number}}/{{o.pk}}/{{o.order_delivered}}">{{o.order_delivered}}</td>
+        {% endif %}
+      {% else %}
+      <td>{{ o.order_delivered }}</td>
+      {% endif %}
 	</tr>
 	{% endfor %}
     </table>

@@ -128,6 +128,11 @@ nav ul, nav ol {
   margin: 0;
   padding: 0; }
 
+.user-account #nav {
+    display: none;
+}
+
+
 img {
   border: 0;
   -ms-interpolation-mode: bicubic;
@@ -308,10 +313,15 @@ header .login a, header .login a:visited {
     max-height: 668px;
 }
 
+.low {
+  color: #ff5500;
+  font-weight:bold;
+}
+
  /*STYLES FOR TABLES*/
 @media all and (orientation: landscape) {
     .table-wrap {
-        height: 440px;
+        height: 380px;
         overflow: scroll;
     }
      
@@ -358,11 +368,18 @@ th {
 }
 
 td, th {
-    padding:8px 5px;
+    padding:15px 5px;
 }
 
 .deliver {
-  position:relative;
+    position:relative;
+    background: #2F383C;
+}
+
+.deliver::after {
+  content:'\21B5';
+  position:absolute;
+  right:8px;
 }
 
 /*STYLES FOR TABLES*/
@@ -389,7 +406,7 @@ header h2 {
   margin: 0 auto; }
 
 h3 {
-  color: #666; }
+  color: #888; }
 
 .text {
   width: 650px;
@@ -418,18 +435,26 @@ form {
 
 .form li {
   border-bottom:1px dotted #6D6D6D;
-  margin:0 0 8px 0;
+  padding: 8px 0;
 }
 
 .form .labelish, .form li input{
   background:none;
-  border:none;
+  border:1px solid transparent;
   color:#fff;
+  -webkit-appearance: none;
 }
 
 .form li input.number:focus {
-  border:1px dotted orange;
-  background:#333;
+  border:1px solid green;
+  background:#111;
+  -webkit-appearance:none;
+}
+
+.form li input.number {
+  background: #262d30;
+  border-radius: 6px;
+  border: 1px solid #222;
 }
 
 .form li:nth-child(even) {
@@ -474,7 +499,7 @@ label {
   font-weight: bold; }
 
 input, textarea {
-  padding: 8px 2px;
+  padding: 8px;
   border: 1px solid #AAA;
   background: white;
   -moz-box-sizing: border-box;
@@ -580,7 +605,7 @@ a.buttonish:hover, a.buttonish:visited {
   top: 0;
   left: 0;
   background: #333;
-  /*opacity:.8;*/
+  opacity:.6;
   width: 100%;
   height: 100%; }
 
@@ -597,12 +622,13 @@ a.buttonish:hover, a.buttonish:visited {
   left: -50%;
   width: 480px;
   padding: 30px;
-  background: white;
-  border: 8px solid #3E3A3E;
+  background: #000;
+  border-radius:10px;
+  /*border: 8px solid #3E3A3E;*/
   max-height: 100%;
   overflow: scroll;
   position: relative;
-  font-size: 10px; }
+  font-size: 14px; }
 
 #modal .modal-text {
   font-size: 16px;

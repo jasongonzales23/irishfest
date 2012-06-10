@@ -2,7 +2,9 @@
 {% block body_class %}{% endblock %}{% block body_id %}inventory-history{% endblock %}
 {% block base_content %}
 
-<h1>{{ location.name }}</h1>
+<h1>{{ location.name }} - {{ location.location_number }}</h1>
+<h3 class="orgName">{{ location.organization }}</h3>
+
 <div class="table-wrap">
     <table>
 	<thead>
@@ -14,13 +16,13 @@
 	
 	{% for i in inventory %}
   {% ifchanged %}
-  <tr class="datetime"> 
+  <tr class="datetime">
     <td colspan="4"><b>Reported At:</b> {{i.timestamp|date:"fA l F j, Y" }}</td>
   </tr>
   <tr class="reporter">
     <td colspan="4"><b>Reported By:</b> {{i.user.first_name}} {{i.user.last_name}}</td>
   </tr>
-	{% endifchanged %} 
+	{% endifchanged %}
 	<tr>
 	    <td>{{ i.beverage.name }}</td>
 	    <td>{{ i.units_reported }}</td>

@@ -2,7 +2,8 @@
 {% block body_class %}{% endblock %}{% block body_id %}last-inventory{% endblock %}
 {% block base_content %}
 
-<h1>{{ location.name }}</h1>
+<h1>{{ location.name }} - {{ location.location_number }}</h1>
+<h3 class="orgName">{{ location.organization }}</h3>
 <div class="table-wrap">
     <table>
 	<thead>
@@ -26,9 +27,9 @@
 	{% endifchanged %}
 	<tr>
 	    <td>{{ i.beverage.name }}</td>
-      <td>{{ i.units_reported }}</td>
       {% for ls in i.beverage.locationstandard_set.all %}
       {% if ls.location == location %}
+      <td class="{% if i.units_reported <= ls.order_when_below %}low{% endif %}">{{ i.units_reported }}</td>
       <td> {{ ls.order_when_below }}</td>
       <td>{{ ls.fill_to_standard }}</td>
       {% endif %}

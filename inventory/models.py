@@ -35,9 +35,10 @@ class Order(models.Model):
     location=models.ForeignKey(Location) #elim this or m2m
     beverage=models.ForeignKey(Beverage)
     units_ordered=models.IntegerField(max_length=10, default=0)
-    order_delivered=models.BooleanField(default=False)
+    order_delivered=models.NullBooleanField(null=True)
     timestamp=models.DateTimeField(auto_now_add=True)
     user=models.ForeignKey(User)
+
 
 class OrderForm(ModelForm):
     units_ordered=forms.IntegerField(initial=0, widget=Html5NumInput)
@@ -58,7 +59,6 @@ class Inventory(models.Model):
     units_reported=models.IntegerField(max_length=10, default=0)
     timestamp=models.DateTimeField(auto_now=True)
     user=models.ForeignKey(User)
-
 
 class InventoryForm(ModelForm):
     units_reported=forms.IntegerField(required=True, initial=0, widget=Html5NumInput)

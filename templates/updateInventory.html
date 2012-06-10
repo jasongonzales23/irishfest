@@ -7,7 +7,8 @@
     <ul class="form">
       {{ formset.as_ul }}
     </ul>
-    <input type="submit" value="Update Inventory"/>
+    <input type="submit" class='submit' value="Update Inventory"/>
+    <a href="/location/{{location.location_number}}">Cancel</a>
 </form>
 
 {% endblock %}

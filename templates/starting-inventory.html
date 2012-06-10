@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% block body_class %}{% endblock %}{% block body_id %}starting-inventory{% endblock %}
 {% block base_content %}
-<h1>{{ location.name }}</h1>
+<h1>{{ location.name }} - {{ location.location_number }}</h1>
+<h3 class="orgName">{{ location.organization }}</h3>
+
 
 <table>
     <thead>

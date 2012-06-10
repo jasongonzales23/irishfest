@@ -24,3 +24,31 @@ $('form').on('click', '.labelish', function(e){
 
 });
 
+
+var confirmSubmit = function(e){
+ $('#blanket').fadeIn(300);
+  var modal = '<div id="modal">';
+  modal += '<h2>Are you sure?</h2>';
+  modal += '<button class="cancel">Cancel</button>';
+  modal += '<button class="confirm">Confirm</button>';
+
+  modal += '</div>';
+  $('#modalOuter').append(modal).show();
+
+  $('#modal').on('click', '.confirm', function(e){
+    $('form').submit();
+  });
+
+  $('#modalOuter').on('click', '.cancel', function(e){
+    $('#modal').remove();
+    $('#blanket').fadeOut(300);
+    return false;
+  });
+
+};
+
+
+$('form').on('click', '.submit', function(e){
+    confirmSubmit();
+    return false;
+});

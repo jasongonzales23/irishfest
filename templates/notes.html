@@ -2,8 +2,10 @@
 {% block body_class %}{% endblock %}{% block body_id %}notes{% endblock %}
 {% block base_content %}
 
-<h1>{{ location.name }}</h1>
-<div class="table-wrap">    
+<h1>{{ location.name }} - {{ location.location_number }}</h1>
+<h3 class="orgName">{{ location.organization }}</h3>
+
+<div class="table-wrap">
     {% for note in notes %}
     <p class="timestamp">{{note.timestamp|date:"fA l F j, Y" }} by {{note.user.first_name}} {{note.user.last_name}}</p>
         <p class="note">{{note.content}}</p>

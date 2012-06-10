@@ -38,8 +38,7 @@ def showLastInventory(request, location_number):
 
     lt = time(h,m,s)
     latest = datetime.combine(d, lt)
-    inventory = Inventory.objects.filter(location=location).filter(timestamp__gte=latest).select_related()
-    
+    inventory = Inventory.objects.filter(location=location).filter(timestamp__gte=latest).select_related().order_by('beverage')
     return render_to_response('location.html',
             {'location':location, 'inventory':inventory},
         context_instance=RequestContext(request)
@@ -48,7 +47,7 @@ def showLastInventory(request, location_number):
 def updateInventory(request, location_number):
     InventoryFormSet=modelformset_factory(Beverage, form=InventoryForm, max_num=0)
     location=Location.objects.get(location_number=location_number)
-    qs=Beverage.objects.filter(location__location_number=location_number)
+    qs=Beverage.objects.filter(location__location_number=location_number).order_by('name')
     formset=InventoryFormSet(queryset=qs)
     if request.method=='POST':
         formset=InventoryFormSet(request.POST)
@@ -75,7 +74,7 @@ def recordOrder(request, location_number):
 
     OrderFormSet=modelformset_factory(Beverage, form=OrderForm, extra=0)
     location=Location.objects.get(location_number=location_number)
-    qs=Beverage.objects.filter(location__location_number=location_number)
+    qs=Beverage.objects.filter(location__location_number=location_number).order_by('name')
     beverage=Order(units_ordered=0)
     formset=OrderFormSet(queryset=qs)
 
@@ -85,7 +84,11 @@ def recordOrder(request, location_number):
             for form in formset:
                 beverage=form.save(commit=False)
                 units_ordered=form.cleaned_data['units_ordered']
-                Order(location=location, beverage=beverage, units_ordered=units_ordered, user=request.user).save()
+                if units_ordered > 0:
+                    order_delivered = False
+                    Order(location=location, beverage=beverage,units_ordered=units_ordered, user=request.user, order_delivered=order_delivered).save()
+                else:
+                    Order(location=location, beverage=beverage,units_ordered=units_ordered, user=request.user).save()
             return HttpResponseRedirect('/location/' + location_number )
         else:
             return render_to_response('record-order.html',
@@ -125,7 +128,7 @@ def startingInventory(request, location_number):
     except ObjectDoesNotExist:
         return HttpResponse('no location for that')
 
-    inventory = LocationStandard.objects.filter(location=location).order_by('beverage')
+    inventory = LocationStandard.objects.filter(location=location).order_by('beverage__name')
 
     return render_to_response('starting-inventory.html',
         {'location':location, 'inventory':inventory},
