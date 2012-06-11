@@ -18,11 +18,17 @@
 	<div id="container">
 	    <header>
 		<div class="row">
-		    <ul id="nav">
-          <li class="latest-inventories"><a href="/report/latest-inventories">Latest Inventories</a></li>
-          <li class="latest-orders" ><a href="/report/latest-orders">Latest Orders</a></li>
-          <li class="unfilled-orders"><a href="/report/unfilled-orders">Unfilled Orders</a></li>
-		    </ul>		
+      <ul id="nav">
+          <li>
+            <a href="/report/total">Festival Total</a>
+          </li>
+          {% for order in orders %}
+          {% ifchanged %}
+          <li>
+            <a href="/report/{{order.timestamp|date:"Y"}}/{{order.timestamp|date:"m"}}/{{order.timestamp|date:"d"}}/">{{ order.timestamp|date:"l" }}</a>
+          </li>
+          {% endifchanged %}
+          {% endfor %}
 		    {% block header %}
 		    {% endblock %}
 		</div>
@@ -66,4 +72,5 @@
 	<![endif]-->
   </body>
 </html>
+
 

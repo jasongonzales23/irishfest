@@ -52,3 +52,10 @@ $('form').on('click', '.submit', function(e){
     confirmSubmit();
     return false;
 });
+var here = window.location.href
+var $nav = $('#nav').find('a');
+$nav.each(function(index){
+    if (here === this.href){
+      $(this).parent('li').addClass('selected');
+    }
+});

@@ -17,7 +17,6 @@ import datetime
 from datetime import datetime, date, time
 from datetime import timedelta
 from django.contrib.auth.decorators import login_required
-
 import itertools
 
 @login_required
@@ -72,11 +71,22 @@ def updateInventory(request, location_number):
 
 def recordOrder(request, location_number):
 
+
     OrderFormSet=modelformset_factory(Beverage, form=OrderForm, extra=0)
     location=Location.objects.get(location_number=location_number)
     qs=Beverage.objects.filter(location__location_number=location_number).order_by('name')
     beverage=Order(units_ordered=0)
     formset=OrderFormSet(queryset=qs)
+    latest = Inventory.objects.filter(location=location).latest('timestamp')
+    latest = latest.timestamp
+    d = latest.date()
+    h = latest.hour
+    m = latest.minute
+    s = latest.second - 1
+
+    lt = time(h,m,s)
+    latest = datetime.combine(d, lt)
+    inventory = Inventory.objects.filter(location=location).filter(timestamp__gte=latest).select_related().order_by('beverage')
 
     if request.method=='POST':
         formset=OrderFormSet(request.POST)
@@ -92,13 +102,13 @@ def recordOrder(request, location_number):
             return HttpResponseRedirect('/location/' + location_number )
         else:
             return render_to_response('record-order.html',
-                {'formset': formset, 'location':location},
+                {'formset': formset, 'location':location,'inventory':inventory},
                 context_instance=RequestContext(request)
             )
 
     else:
         return render_to_response('record-order.html',
-            {'formset': formset, 'location':location},
+            {'formset': formset, 'location':location,'inventory':inventory},
             context_instance=RequestContext(request)
         )
 
@@ -177,11 +187,13 @@ def recordDelivery(request, location_number, order_id, order_delivered):
 
 def reportList(request):
     orders = Order.objects.all().order_by('timestamp')
-
+    return orders
+    """
     return render_to_response('reportList.html',
             {'orders':orders,},
             context_instance=RequestContext(request)
         )
+    """
 
 def report(request):
     """
@@ -207,10 +219,11 @@ def report(request):
        grid.append((location, row))
        for beverage in beverages:
            row.append(totals.get(location.pk, {}).get(beverage.pk, 0))
-    print grid
-    #return grid, beverages
+    
+    orders = reportList(request)
+    
     return render_to_response('daily-report.html',
-            {'grid':grid, 'beverages':beverages},
+            {'grid':grid, 'beverages':beverages,'orders': orders},
         context_instance=RequestContext(request)
     )
 
@@ -224,11 +237,13 @@ def dailyReport(request, year, month, day):
     """
     locations = Location.objects.order_by('location_number')
     beverages = Beverage.objects.order_by('name')
-    
+    requestString = '/report/' + year +'/' + month +'/'+ day+ '/'
+
     year = int(year)
     month = int(month)
     day = int(day)
-
+    
+   
     orders = Order.objects.filter(timestamp__year=year,timestamp__month=month,timestamp__day=day).values('location', 'beverage').annotate(total_units_ordered=Sum('units_ordered'))
 
     totals = {}
@@ -245,8 +260,11 @@ def dailyReport(request, year, month, day):
        for beverage in beverages:
            row.append(totals.get(location.pk, {}).get(beverage.pk, 0))
 
+    orders = reportList(request)
+
+
     return render_to_response('daily-report.html',
-            {'grid':grid, 'beverages':beverages},
+            {'grid':grid, 'beverages':beverages, 'orders':orders,'requestString': requestString},
         context_instance=RequestContext(request)
     )
 
@@ -326,7 +344,7 @@ import csv
 
 def csvTotal(request):
     response = HttpResponse(mimetype='text/csv')
-    response['Content-Disposition'] = 'attachment;filename=export.csv'
+    response['Content-Disposition'] = 'attachment;filename=festival-total.csv'
 
     writer = csv.writer(response)
 
@@ -336,7 +354,7 @@ def csvTotal(request):
     orders = Order.objects.values('location', 'beverage').annotate(total_units_ordered=Sum('units_ordered'))
 
     totals = {}
-
+    writer.writerow(['Festival Total']);
     bevRow = ['Location #','Location',]
     for beverage in beverages:
         bevRow.append(beverage.name)
@@ -357,8 +375,9 @@ def csvTotal(request):
     return response
 
 def csvDailyReport(request, year, month, day):
+    dateString = year+'-'+ month+'-'+ day
     response = HttpResponse(mimetype='text/csv')
-    response['Content-Disposition'] = 'attachment;filename=export.csv'
+    response['Content-Disposition'] = 'attachment;filename='+ dateString +'.csv'
 
     writer = csv.writer(response)
 
@@ -373,6 +392,7 @@ def csvDailyReport(request, year, month, day):
 
     totals = {}
 
+    writer.writerow(['Total for', dateString ]);
     bevRow = ['Location #','Location',]
     for beverage in beverages:
         bevRow.append(beverage.name)

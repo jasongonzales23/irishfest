@@ -357,9 +357,7 @@ header .login a, header .login a:visited {
 }
 
 /*NAVIGATION STYLES*/
-#last-inventory .last-inventory, #order-history .order-history,
-#inventory-history .inventory-history, #starting-inventory .starting-inventory,
-#notes .notes {
+.selected {
   background: url(../img/bg-noise.jpg) 0 0 repeat;
 }
 

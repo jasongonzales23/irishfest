@@ -1,7 +1,7 @@
 {% extends "reports-base.html" %}
-{% block base_content %}
-{% block body_class %}{% endblock %}{% block body_id %}{% endblock %}
+{% block body_class %}{% endblock %}{% block body_id%}latest-inventories{% endblock %}
 
+{% block base_content %}
 {% for location, beverage, time, reporter in grid %}
 
 <h1>{{ location }}</h1>
