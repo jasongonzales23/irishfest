@@ -188,49 +188,8 @@ def recordDelivery(request, location_number, order_id, order_delivered):
 def reportList(request):
     orders = Order.objects.all().order_by('timestamp')
     return orders
-    """
-    return render_to_response('reportList.html',
-            {'orders':orders,},
-            context_instance=RequestContext(request)
-        )
-    """
 
-def oldreport(request):
-
-    """
-    Build a 2 dimensional array of total units ordered for each beverage in
-    each location.
-
-    Returns a two-part tuple of the grid and beverages queryset.
-    """
-    locations = Location.objects.order_by('location_number')
-    beverages = Beverage.objects.order_by('name')
-
-    orders = Order.objects.values('location', 'beverage').annotate(total_units_ordered=Sum('units_ordered'))
-
-    totals = {}
-
-    for order in orders:
-        location = totals.setdefault(order['location'], {})
-        location[order['beverage']] = order['total_units_ordered']
-
-    grid = []
-    for location in locations:
-       row = []
-       grid.append((location, row))
-       for beverage in beverages:
-           row.append(totals.get(location.pk, {}).get(beverage.pk, 0))
-    
-    orders = reportList(request)
-    
-    return render_to_response('daily-report.html',
-            {'grid':grid, 'beverages':beverages,'orders': orders},
-        context_instance=RequestContext(request)
-    )
-
-    
 def report(request):
-
     """
     Build a 2 dimensional array of total units ordered for each beverage in
     each location.
@@ -268,12 +227,6 @@ def report(request):
     )
 
 def dailyReport(request, year, month, day):
-    """
-    Build a 2 dimensional array of total units ordered for each beverage in
-    each location.
-
-    Returns a two-part tuple of the grid and beverages queryset.
-    """
     locations = Location.objects.order_by('location_number')
     beverages = Beverage.objects.order_by('name')
     requestString = '/report/' + year +'/' + month +'/'+ day+ '/'
@@ -290,20 +243,23 @@ def dailyReport(request, year, month, day):
     for order in orders:
         location = totals.setdefault(order['location'], {})
         location[order['beverage']] = order['total_units_ordered']
-        #print location[order['beverage']]
 
     grid = []
-    for location in locations:
-       row = []
-       grid.append((location, row))
-       for beverage in beverages:
-           row.append(totals.get(location.pk, {}).get(beverage.pk, 0))
+    for beverage in beverages:
+        row = []
+        grid.append((beverage, row))
+
+        rowtotal = 0
+        for location in locations:
+            itemtotal = totals.get(location.pk, {}).get(beverage.pk, 0)
+            rowtotal += itemtotal
+            row.append(itemtotal)
+        row.append(rowtotal)
 
     orders = reportList(request)
 
-
     return render_to_response('daily-report.html',
-            {'grid':grid, 'beverages':beverages, 'orders':orders,'requestString': requestString},
+            {'grid':grid, 'locations':locations, 'orders':orders,'requestString': requestString},
         context_instance=RequestContext(request)
     )
 
