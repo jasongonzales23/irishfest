@@ -350,21 +350,30 @@ def csvTotal(request):
 
     totals = {}
     writer.writerow(['Festival Total']);
-    bevRow = ['Location #','Location',]
-    for beverage in beverages:
-        bevRow.append(beverage.name)
-    writer.writerow(bevRow)
+    locationNumRow = ['',]
+    for location in locations:
+        locationNumRow.append(location.location_number)
+    writer.writerow(locationNumRow)
+
+    locationRow = ['',]
+    for location in locations:
+        locationRow.append(location)
+    writer.writerow(locationRow)
+
 
     for order in orders:
         location = totals.setdefault(order['location'], {})
         location[order['beverage']] = order['total_units_ordered']
 
-    for location in locations:
+    for beverage in beverages:
         row = []
-        row.append(location.location_number)
-        row.append(location)
-        for beverage in beverages:
-            row.append(totals.get(location.pk, {}).get(beverage.pk, 0))
+        row.append(beverage.name)
+        rowtotal = 0
+        for location in locations:
+            itemtotal = totals.get(location.pk, {}).get(beverage.pk, 0)
+            rowtotal += itemtotal
+            row.append(itemtotal)
+        row.append(rowtotal)
         writer.writerow(row)
 
     return response
@@ -388,22 +397,25 @@ def csvDailyReport(request, year, month, day):
     totals = {}
 
     writer.writerow(['Total for', dateString ]);
-    bevRow = ['Location #','Location',]
-    for beverage in beverages:
-        bevRow.append(beverage.name)
+    locationRow = ['',]
+    for location in locations:
+        locationRow.append(location)
+    writer.writerow(locationRow)
 
-    writer.writerow(bevRow)
 
     for order in orders:
         location = totals.setdefault(order['location'], {})
         location[order['beverage']] = order['total_units_ordered']
 
-    for location in locations:
+    for beverage in beverages:
         row = []
-        row.append(location.location_number)
-        row.append(location)
-        for beverage in beverages:
-            row.append(totals.get(location.pk, {}).get(beverage.pk, 0))
+        row.append(beverage.name)
+        rowtotal = 0
+        for location in locations:
+            itemtotal = totals.get(location.pk, {}).get(beverage.pk, 0)
+            rowtotal += itemtotal
+            row.append(itemtotal)
+        row.append(rowtotal)
         writer.writerow(row)
 
     return response
