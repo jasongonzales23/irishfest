@@ -8,22 +8,16 @@
         </thead>
         <tbody>
           <tr>
-            <th></th>
-            {% for location in locations %}
-            <th>{{ location.location_number }}</th>
-            {% endfor %}
-            <th></th>
-          </tr>
-          <tr>
-            <th></th>
-            {% for location in locations %}
-            <th>{{ location.name }}</th>
-            {% endfor %}
-            <th>Totals</th>
-          </tr>
-         {% for beverage, row in grid %}
-          <tr>
+            <th>Location#</th>
+            <th>Location</th>
+            {% for beverage in beverages %}
             <th>{{ beverage }}</th>
+            {% endfor %}
+          </tr>
+         {% for location, row in grid %}
+          <tr>
+            <th>{{ location.location_number }}</th>
+            <th>{{ location }}</th>
             {% for total in row %}
             <td>{{ total }}</td>
             {% endfor %}
@@ -32,4 +26,3 @@
         </tbody>
     </table>
 {% endblock %}
-

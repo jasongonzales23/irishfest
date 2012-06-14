@@ -27,7 +27,7 @@ class LocationAdmin(admin.ModelAdmin):
             ]
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('beverage', 'location', 'timestamp','order_delivered')
+    list_display = ('beverage', 'location', 'timestamp','units_ordered','order_delivered')
 
 
 class LocationStandardAdmin(admin.ModelAdmin):
