@@ -35,7 +35,6 @@ def showLastInventory(request, location_number):
     grid=[]
     for s in standards :
         row = []
-
         grid.append((s.beverage, row))
         for i in inventory:
             if i.beverage == s.beverage:
@@ -120,11 +119,22 @@ def orderHistory(request, location_number):
     )
 
 def inventoryHistory(request, location_number):
-    location=Location.objects.get(location_number=location_number)
-    inventory=Inventory.objects.filter(location__location_number=location_number).order_by('-group')
+    latest = InventoryGroup.objects.all().order_by('-id')
+    location = Location.objects.get(location_number=location_number)
+    inventory = Inventory.objects.filter(location=location).order_by('-beverage')
+    beverages = Beverage.objects.all().order_by('name')
+
+    grid = []
+    for l in latest:
+        group = []
+        grid.append(group)
+        for i in inventory:
+            if i.group == l:
+                group.append((i.timestamp, i.user, i.beverage, i.units_reported))
+    print grid
 
     return render_to_response('inventory-history.html',
-        {'location':location, 'inventory':inventory},
+            {'location':location, 'inventory':inventory, 'grid':grid},
         context_instance=RequestContext(request)
     )
 
