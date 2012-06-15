@@ -32,22 +32,14 @@ def showLastInventory(request, location_number):
     inventory = Inventory.objects.filter(location=location).filter(group=latest)
     standards = LocationStandard.objects.filter(location=location).order_by('-beverage')
 
+    grid=[]
     for s in standards :
         row = []
+
         grid.append((s.beverage, row))
         for i in inventory:
             if i.beverage == s.beverage:
                 row.append((i.units_reported,s.order_when_below, s.fill_to_standard))
-    #latest = Inventory.objects.filter(location=location).latest('timestamp')
-    #latest = latest.timestamp
-    #d = latest.date()
-    #h = latest.hour
-    #m = latest.minute
-    #s = latest.second - 1
-
-    #lt = time(h,m,s)
-    #latest = datetime.combine(d, lt)
-    #inventory = Inventory.objects.filter(location=location).filter(timestamp__gte=latest).select_related().order_by('beverage__name')
 
     return render_to_response('location.html',
             {'location':location, 'inventory':inventory,'grid':grid},
