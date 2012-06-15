@@ -4,7 +4,7 @@
 {% block base_content %}
 {% for location, beverage, time, reporter in grid %}
 
-<h1>{{ location }}</h1>
+<h1>{{ location }} - {{ location.location_number }}</h1>
 <table>
   <thead>
     <tr>

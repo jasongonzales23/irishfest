@@ -1,7 +1,9 @@
 from django.contrib import admin
 from datetime import datetime
-from inventory.models import Beverage,Location, LocationStandard, Inventory, Order, Note
+from inventory.models import Beverage,Location, LocationStandard, Inventory, Order, Note, InventoryGroup
 
+class InventoryGroupAdmin(admin.ModelAdmin):
+    model=InventoryGroup
 
 class InventoryInlineAdmin(admin.TabularInline):
     model=Inventory
@@ -49,3 +51,4 @@ admin.site.register(LocationStandard, LocationStandardAdmin)
 admin.site.register(Inventory, InventoryAdmin)
 admin.site.register(Note, NoteAdmin)
 admin.site.register(Order, OrderAdmin)
+admin.site.register(InventoryGroup, InventoryGroupAdmin)

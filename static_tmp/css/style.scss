@@ -424,9 +424,8 @@ h3 {
   padding: 0 30px 0 0px; }
 
 form {
-  width: 450px; 
+  width: 770px; 
 }
-
 .form {
   list-style:none;
   padding:0;
@@ -459,6 +458,7 @@ form {
 .form li:nth-child(even) {
   float:left;
   clear:both;
+  width:550px;
 }
 
 .form li:nth-child(odd) {

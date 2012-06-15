@@ -481,7 +481,7 @@ h3 {
 }
 
 form {
-  width: 450px;
+  width: 770px;
 }
 
 .form {
@@ -516,6 +516,7 @@ form {
 .form li:nth-child(even) {
   float: left;
   clear: both;
+  width: 550px;
 }
 
 .form li:nth-child(odd) {

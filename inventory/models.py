@@ -39,7 +39,6 @@ class Order(models.Model):
     timestamp=models.DateTimeField(auto_now_add=True)
     user=models.ForeignKey(User)
 
-
 class OrderForm(ModelForm):
     units_ordered=forms.IntegerField(initial=0, widget=Html5NumInput)
     class Meta:
@@ -53,7 +52,14 @@ class OrderForm(ModelForm):
         self.fields['name'].widget.attrs['readonly'] = True
         self.fields['name'].label = ''
 
+class InventoryGroup(models.Model):
+    id = models.AutoField(primary_key=True)
+
+    def __unicode__(self):
+        return str(self.id)
+
 class Inventory(models.Model):
+    group=models.ForeignKey(InventoryGroup)
     location=models.ForeignKey(Location) #elim this or m2m
     beverage=models.ForeignKey(Beverage)
     units_reported=models.IntegerField(max_length=10, default=0)

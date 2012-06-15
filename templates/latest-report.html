@@ -4,7 +4,7 @@
 {% block base_content %}
 {% for location, beverage, time, reporter in grid %}
 
-<h1>{{ location }}</h1>
+<h1>{{ location }} - {{ location.location_number }}</h1>
 <p class="datetime"><b>Reported At: </b>{{time.0}}</p>
 <p class="reporter"><b>Reported By: </b>{{reporter.0.first_name}} {{reporter.0.last_name}}</p>
 <table>
@@ -22,7 +22,7 @@
       <td>
         {{ thing.0 }}
       </td>
-      <td>
+      <td class="{% if thing.1 <= thing.2 %}low{% endif %}">
         {{ thing.1 }}
       </td>
       <td>

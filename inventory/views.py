@@ -5,7 +5,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from inventory.models import Beverage, Location, Inventory, Note, Order, InventoryForm, OrderForm, NoteForm
-from inventory.models import LocationStandard
+from inventory.models import LocationStandard, InventoryGroup
 from django.template.defaultfilters import slugify
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q, Count, Sum, Max, Min
@@ -28,18 +28,29 @@ def showLastInventory(request, location_number):
     except ObjectDoesNotExist:
         return HttpResponse('no location for that')
 
-    latest = Inventory.objects.filter(location=location).latest('timestamp')
-    latest = latest.timestamp
-    d = latest.date()
-    h = latest.hour
-    m = latest.minute
-    s = latest.second - 1
+    latest = InventoryGroup.objects.all().latest('id')
+    inventory = Inventory.objects.filter(location=location).filter(group=latest)
+    standards = LocationStandard.objects.filter(location=location).order_by('-beverage')
 
-    lt = time(h,m,s)
-    latest = datetime.combine(d, lt)
-    inventory = Inventory.objects.filter(location=location).filter(timestamp__gte=latest).select_related().order_by('beverage')
+    for s in standards :
+        row = []
+        grid.append((s.beverage, row))
+        for i in inventory:
+            if i.beverage == s.beverage:
+                row.append((i.units_reported,s.order_when_below, s.fill_to_standard))
+    #latest = Inventory.objects.filter(location=location).latest('timestamp')
+    #latest = latest.timestamp
+    #d = latest.date()
+    #h = latest.hour
+    #m = latest.minute
+    #s = latest.second - 1
+
+    #lt = time(h,m,s)
+    #latest = datetime.combine(d, lt)
+    #inventory = Inventory.objects.filter(location=location).filter(timestamp__gte=latest).select_related().order_by('beverage__name')
+
     return render_to_response('location.html',
-            {'location':location, 'inventory':inventory},
+            {'location':location, 'inventory':inventory,'grid':grid},
         context_instance=RequestContext(request)
     )
 
@@ -50,11 +61,12 @@ def updateInventory(request, location_number):
     formset=InventoryFormSet(queryset=qs)
     if request.method=='POST':
         formset=InventoryFormSet(request.POST)
+        group = InventoryGroup.objects.create()
         if formset.is_valid():
             for form in formset:
                 beverage=form.save(commit=False)
                 units_reported=form.cleaned_data['units_reported']
-                Inventory(location=location, beverage=beverage, units_reported=units_reported, user=request.user).save()
+                Inventory(location=location, beverage=beverage, units_reported=units_reported,user=request.user, group=group).save()
 
             return HttpResponseRedirect('/location/' + location_number )
         else:
@@ -70,23 +82,11 @@ def updateInventory(request, location_number):
         )
 
 def recordOrder(request, location_number):
-
-
     OrderFormSet=modelformset_factory(Beverage, form=OrderForm, extra=0)
     location=Location.objects.get(location_number=location_number)
     qs=Beverage.objects.filter(location__location_number=location_number).order_by('name')
     beverage=Order(units_ordered=0)
     formset=OrderFormSet(queryset=qs)
-    latest = Inventory.objects.filter(location=location).latest('timestamp')
-    latest = latest.timestamp
-    d = latest.date()
-    h = latest.hour
-    m = latest.minute
-    s = latest.second - 1
-
-    lt = time(h,m,s)
-    latest = datetime.combine(d, lt)
-    inventory = Inventory.objects.filter(location=location).filter(timestamp__gte=latest).select_related().order_by('beverage')
 
     if request.method=='POST':
         formset=OrderFormSet(request.POST)
@@ -108,11 +108,17 @@ def recordOrder(request, location_number):
 
     else:
         return render_to_response('record-order.html',
-            {'formset': formset, 'location':location,'inventory':inventory},
+            {'formset': formset, 'location':location,},
             context_instance=RequestContext(request)
         )
 
 def orderHistory(request, location_number):
+    """
+    maybe what I do is get all the times
+    then for each time range get the order per bev 
+    basically do what I am doing in the template, but then do a query by
+    bev so I can sort those by name?
+    """
     location=Location.objects.get(location_number=location_number)
     order=Order.objects.filter(location__location_number=location_number).order_by('-timestamp')
 
@@ -264,7 +270,7 @@ def dailyReport(request, year, month, day):
     )
 
 def latestOrders(request):
-    locations = Location.objects.all().order_by('name').annotate(most_recent=Max('order__timestamp'))
+    locations = Location.objects.all().order_by('location_number').annotate(most_recent=Max('order__timestamp'))
     orders = Order.objects.annotate(most_recent=Max('timestamp')).order_by('-timestamp')
     newest = Order.objects.filter(timestamp__in=[l.most_recent for l in locations])
 
@@ -289,7 +295,7 @@ def latestOrders(request):
     )
 
 def latestInventories(request):
-    locations = Location.objects.all().order_by('name').annotate(most_recent=Max('inventory__timestamp'))
+    locations = Location.objects.all().order_by('location_number').annotate(most_recent=Max('inventory__timestamp'))
     inventories = Inventory.objects.annotate(most_recent=Max('timestamp')).order_by('-timestamp')
     newest = Inventory.objects.filter(timestamp__in=[l.most_recent for l in locations])
     standards = LocationStandard.objects.all()
@@ -318,13 +324,13 @@ def latestInventories(request):
 
 
 def unfilledOrders(request):
-    locations = Location.objects.all().order_by('name')
+    locations = Location.objects.all().order_by('location_number')
     orders = Order.objects.all().order_by('location__name')
     
     grid = []
     for location in locations:
         row = []
-        grid.append(( location.name, row))
+        grid.append(( location, row))
         for order in orders:
             if order.location == location and order.order_delivered == False:
                 row.append((order.beverage, order.timestamp, order.order_delivered,))

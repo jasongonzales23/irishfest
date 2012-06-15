@@ -24,18 +24,19 @@
   <tr class="reporter">
     <td colspan="4"><b>Reported By:</b> {{ i.user.first_name}} {{ i.user.last_name}}</td>
   </tr>
-	{% endifchanged %}
-	<tr>
-	    <td>{{ i.beverage.name }}</td>
-      {% for ls in i.beverage.locationstandard_set.all %}
-      {% if ls.location == location %}
-      <td class="{% if i.units_reported <= ls.order_when_below %}low{% endif %}">{{ i.units_reported }}</td>
-      <td> {{ ls.order_when_below }}</td>
-      <td>{{ ls.fill_to_standard }}</td>
-      {% endif %}
+  {% endifchanged %}
+  {% endfor %}
+      {% for beverage, row in grid %}
+  <tr>
+      <td>{{ beverage }}</td>
+      {% for thing in row %}
+      <td class="{% if thing.0 <= thing.1 %}low{% endif %}">{{ thing.0 }}</td>
+      <td> {{ thing.1 }}</td>
+      <td>{{ thing.2 }}</td>
       {% endfor %}
 	</tr>
-	{% endfor %}
+
+      {% endfor %}
     </table>
 </div>
 
