@@ -121,7 +121,7 @@ def orderHistory(request, location_number):
 
 def inventoryHistory(request, location_number):
     location=Location.objects.get(location_number=location_number)
-    inventory=Inventory.objects.filter(location__location_number=location_number).order_by('-timestamp')
+    inventory=Inventory.objects.filter(location__location_number=location_number).order_by('-group')
 
     return render_to_response('inventory-history.html',
         {'location':location, 'inventory':inventory},
