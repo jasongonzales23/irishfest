@@ -29,19 +29,11 @@ def showLastInventory(request, location_number):
         return HttpResponse('no location for that')
 
     latest = Inventory.objects.filter(location=location).latest('group')
-    inventory = Inventory.objects.filter(group=latest.group.id)
+    inventory = Inventory.objects.filter(group=latest.group.id).order_by('beverage__name')
     standards = LocationStandard.objects.filter(location=location).order_by('beverage__name')
 
-    grid=[]
-    for s in standards :
-        row = []
-        grid.append((s.beverage, row))
-        for i in inventory:
-            if i.beverage == s.beverage:
-                row.append((i.units_reported,s.order_when_below,s.fill_to_standard, i.group))
-
     return render_to_response('location.html',
-            {'location':location, 'inventory':inventory,'grid':grid},
+            {'location':location, 'inventory':inventory,},
         context_instance=RequestContext(request)
     )
 
@@ -193,7 +185,7 @@ def report(request):
     beverages = Beverage.objects.order_by('name')
 
     orders = Order.objects.values('location', 'beverage').annotate(total_units_ordered=Sum('units_ordered'))
-   
+
     totals = {}
 
     for order in orders:
@@ -204,7 +196,7 @@ def report(request):
     for beverage in beverages:
         row = []
         grid.append((beverage, row))
-        
+
         rowtotal = 0
         for location in locations:
             itemtotal = totals.get(location.pk, {}).get(beverage.pk, 0)
@@ -227,10 +219,8 @@ def dailyReport(request, year, month, day):
     year = int(year)
     month = int(month)
     day = int(day)
-    
-   
-    orders = Order.objects.filter(timestamp__year=year,timestamp__month=month,timestamp__day=day).values('location', 'beverage').annotate(total_units_ordered=Sum('units_ordered'))
 
+    orders = Order.objects.filter(timestamp__year=year,timestamp__month=month,timestamp__day=day).values('location', 'beverage').annotate(total_units_ordered=Sum('units_ordered'))
     totals = {}
 
     for order in orders:
@@ -313,7 +303,7 @@ def latestInventories(request):
 def unfilledOrders(request):
     locations = Location.objects.all().order_by('location_number')
     orders = Order.objects.all().order_by('location__name')
-    
+
     grid = []
     for location in locations:
         row = []
