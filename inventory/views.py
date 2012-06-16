@@ -5,7 +5,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from inventory.models import Beverage, Location, Inventory, Note, Order, InventoryForm, OrderForm, NoteForm
-from inventory.models import LocationStandard, InventoryGroup
+from inventory.models import LocationStandard, InventoryGroup,OrderGroup
 from django.template.defaultfilters import slugify
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q, Count, Sum, Max, Min
@@ -28,9 +28,9 @@ def showLastInventory(request, location_number):
     except ObjectDoesNotExist:
         return HttpResponse('no location for that')
 
-    latest = InventoryGroup.objects.all().latest('id')
-    inventory = Inventory.objects.filter(location=location).filter(group=latest)
-    standards = LocationStandard.objects.filter(location=location).order_by('-beverage')
+    latest = Inventory.objects.filter(location=location).latest('group')
+    inventory = Inventory.objects.filter(group=latest.group.id)
+    standards = LocationStandard.objects.filter(location=location).order_by('beverage__name')
 
     grid=[]
     for s in standards :
@@ -38,7 +38,7 @@ def showLastInventory(request, location_number):
         grid.append((s.beverage, row))
         for i in inventory:
             if i.beverage == s.beverage:
-                row.append((i.units_reported,s.order_when_below, s.fill_to_standard))
+                row.append((i.units_reported,s.order_when_below,s.fill_to_standard, i.group))
 
     return render_to_response('location.html',
             {'location':location, 'inventory':inventory,'grid':grid},
@@ -81,13 +81,14 @@ def recordOrder(request, location_number):
 
     if request.method=='POST':
         formset=OrderFormSet(request.POST)
+        group = OrderGroup.objects.create()
         if formset.is_valid():
             for form in formset:
                 beverage=form.save(commit=False)
                 units_ordered=form.cleaned_data['units_ordered']
                 if units_ordered > 0:
                     order_delivered = False
-                    Order(location=location, beverage=beverage,units_ordered=units_ordered, user=request.user, order_delivered=order_delivered).save()
+                    Order(location=location, beverage=beverage,units_ordered=units_ordered,user=request.user,order_delivered=order_delivered, group=group).save()
                 else:
                     Order(location=location, beverage=beverage,units_ordered=units_ordered, user=request.user).save()
             return HttpResponseRedirect('/location/' + location_number )
@@ -104,24 +105,19 @@ def recordOrder(request, location_number):
         )
 
 def orderHistory(request, location_number):
-    """
-    maybe what I do is get all the times
-    then for each time range get the order per bev 
-    basically do what I am doing in the template, but then do a query by
-    bev so I can sort those by name?
-    """
+    #latest = OrderGroup.objects.all().order_by('-id')
     location=Location.objects.get(location_number=location_number)
-    order=Order.objects.filter(location__location_number=location_number).order_by('-timestamp')
+    order=Order.objects.filter(location__location_number=location_number).order_by('-group__id','beverage__name')
 
     return render_to_response('order-history.html',
-        {'location':location, 'order':order},
+            {'location':location, 'order':order},
         context_instance=RequestContext(request)
     )
 
 def inventoryHistory(request, location_number):
     latest = InventoryGroup.objects.all().order_by('-id')
     location = Location.objects.get(location_number=location_number)
-    inventory = Inventory.objects.filter(location=location).order_by('-beverage')
+    inventory = Inventory.objects.filter(location=location).order_by('-group__id','beverage__name')
     beverages = Beverage.objects.all().order_by('name')
 
     grid = []
@@ -131,7 +127,6 @@ def inventoryHistory(request, location_number):
         for i in inventory:
             if i.group == l:
                 group.append((i.timestamp, i.user, i.beverage, i.units_reported))
-    print grid
 
     return render_to_response('inventory-history.html',
             {'location':location, 'inventory':inventory, 'grid':grid},

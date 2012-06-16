@@ -31,7 +31,14 @@ class LocationStandard(models.Model):
     fill_to_standard=models.IntegerField(max_length=10)
     order_when_below=models.IntegerField(max_length=10)
 
+class OrderGroup(models.Model):
+    id = models.AutoField(primary_key=True)
+
+    def __unicode__(self):
+        return str(self.id)
+
 class Order(models.Model):
+    group=models.ForeignKey(OrderGroup)
     location=models.ForeignKey(Location) #elim this or m2m
     beverage=models.ForeignKey(Beverage)
     units_ordered=models.IntegerField(max_length=10, default=0)
