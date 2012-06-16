@@ -115,21 +115,11 @@ def orderHistory(request, location_number):
     )
 
 def inventoryHistory(request, location_number):
-    latest = InventoryGroup.objects.all().order_by('-id')
     location = Location.objects.get(location_number=location_number)
     inventory = Inventory.objects.filter(location=location).order_by('-group__id','beverage__name')
-    beverages = Beverage.objects.all().order_by('name')
-
-    grid = []
-    for l in latest:
-        group = []
-        grid.append(group)
-        for i in inventory:
-            if i.group == l:
-                group.append((i.timestamp, i.user, i.beverage, i.units_reported))
 
     return render_to_response('inventory-history.html',
-            {'location':location, 'inventory':inventory, 'grid':grid},
+            {'location':location, 'inventory':inventory},
         context_instance=RequestContext(request)
     )
 

@@ -13,23 +13,20 @@
 		<th>Units Reported</th>
 	    </tr>
     </thead>
-
 	
-  {% for row in grid %}
-  {% for date, user, beverage, inv in row %}
+  {% for i in inventory %}
   {% ifchanged %}
   <tr class="datetime">
-    <td colspan="4"><b>Reported At:</b> {{date|date:"fA l F j, Y" }}</td>
+    <td colspan="4"><b>Reported At:</b> {{i.timestamp|date:"fA l F j, Y" }}</td>
   </tr>
   <tr class="reporter">
-    <td colspan="4"><b>Reported By:</b> {{user.first_name}} {{user.last_name}}</td>
+    <td colspan="4"><b>Reported By:</b> {{i.user.first_name}} {{i.user.last_name}}</td>
   </tr>
 	{% endifchanged %}
 	<tr>
-	    <td>{{ beverage }}</td>
-	    <td>{{ inv }}</td>
+	    <td>{{ i.beverage }}</td>
+	    <td>{{ i.units_reported }}</td>
 	</tr>
-  {% endfor %}
 	{% endfor %}
     </table>
 </div>
