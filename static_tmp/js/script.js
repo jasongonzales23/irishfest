@@ -59,3 +59,34 @@ $nav.each(function(index){
       $(this).parent('li').addClass('selected');
     }
 });
+
+var confirmLogout = function(e){
+  $('#blanket').fadeIn(300);
+  var modal = '<div id="modal">';
+  modal += '<h2>Are you sure you want to logout?</h2>';
+  modal += '<button class="cancel">No</button>';
+  modal += '<button class="confirm">Yes</button>';
+
+  modal += '</div>';
+  $('#modalOuter').append(modal).show();
+
+  $('#modal').on('click', '.confirm', function(e){
+    window.location.href="/accounts/logout/";
+  });
+
+  $('#modalOuter').on('click', '.cancel', function(e){
+    $('#modal').remove();
+    $('#blanket').fadeOut(300);
+    return false;
+  });
+   
+}
+
+$('.login').on('click', function(e){
+    confirmLogout();
+    return false;
+});
+
+$('form').on('click', 'input', function(e){
+    $(this).val('');
+});

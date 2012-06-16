@@ -37,6 +37,7 @@ def showLastInventory(request, location_number):
         context_instance=RequestContext(request)
     )
 
+@login_required
 def updateInventory(request, location_number):
     InventoryFormSet=modelformset_factory(Beverage, form=InventoryForm, max_num=0)
     location=Location.objects.get(location_number=location_number)
@@ -64,6 +65,7 @@ def updateInventory(request, location_number):
             context_instance=RequestContext(request)
         )
 
+@login_required
 def recordOrder(request, location_number):
     OrderFormSet=modelformset_factory(Beverage, form=OrderForm, extra=0)
     location=Location.objects.get(location_number=location_number)
@@ -96,6 +98,7 @@ def recordOrder(request, location_number):
             context_instance=RequestContext(request)
         )
 
+@login_required
 def orderHistory(request, location_number):
     #latest = OrderGroup.objects.all().order_by('-id')
     location=Location.objects.get(location_number=location_number)
@@ -106,6 +109,7 @@ def orderHistory(request, location_number):
         context_instance=RequestContext(request)
     )
 
+@login_required
 def inventoryHistory(request, location_number):
     location = Location.objects.get(location_number=location_number)
     inventory = Inventory.objects.filter(location=location).order_by('-group__id','beverage__name')
@@ -115,6 +119,7 @@ def inventoryHistory(request, location_number):
         context_instance=RequestContext(request)
     )
 
+@login_required
 def startingInventory(request, location_number):
         #change to get obj or 404
     try:
@@ -130,6 +135,7 @@ def startingInventory(request, location_number):
         context_instance=RequestContext(request)
     )
 
+@login_required
 def notes(request, location_number):
     location=Location.objects.get(location_number=location_number)
     notes=Note.objects.filter(location=location).order_by('-timestamp')
@@ -139,6 +145,7 @@ def notes(request, location_number):
         context_instance = RequestContext(request)
     )
 
+@login_required
 def addNote(request, location_number):
     location=Location.objects.get(location_number=location_number)
     if request.method=='POST':
@@ -156,6 +163,7 @@ def addNote(request, location_number):
             context_instance=RequestContext(request)
         )
 
+@login_required
 def recordDelivery(request, location_number, order_id, order_delivered):
     #put a try catch of some kind in here
     location=Location.objects.get(location_number=location_number)
