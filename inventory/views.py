@@ -76,6 +76,7 @@ def recordOrder(request, location_number):
     if request.method=='POST':
         formset=OrderFormSet(request.POST)
         group = OrderGroup.objects.create()
+        print group
         if formset.is_valid():
             for form in formset:
                 beverage=form.save(commit=False)
@@ -84,7 +85,7 @@ def recordOrder(request, location_number):
                     order_delivered = False
                     Order(location=location, beverage=beverage,units_ordered=units_ordered,user=request.user,order_delivered=order_delivered, group=group).save()
                 else:
-                    Order(location=location, beverage=beverage,units_ordered=units_ordered, user=request.user).save()
+                    Order(location=location, beverage=beverage,units_ordered=units_ordered, user=request.user, group=group).save()
             return HttpResponseRedirect('/location/' + location_number )
         else:
             return render_to_response('record-order.html',
