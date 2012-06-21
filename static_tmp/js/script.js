@@ -89,10 +89,10 @@ $('.login').on('click', function(e){
 
 $('form').on('click', 'input', function(e){
     var $this = $(this);
-    if(!$this.hasClass('labelish')){
+    if(!$this.hasClass('labelish')&& !$this.hasClass('submit')){
     $this.val('');
     }
-    else {
+    else if ($this.hasClass('labelish')) {
     $this.parent('li').next().find('input').val('');
     }
 });
