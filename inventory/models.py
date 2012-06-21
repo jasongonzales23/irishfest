@@ -56,6 +56,7 @@ class OrderForm(ModelForm):
         super(OrderForm, self).__init__(*args, **kwargs)
         self.fields['units_ordered'].label = ''
         self.fields['units_ordered'].widget.attrs = {'class':'number'}
+        self.fields['name'].widget.attrs = {'class':'labelish'}
         self.fields['name'].widget.attrs['readonly'] = True
         self.fields['name'].label = ''
 
