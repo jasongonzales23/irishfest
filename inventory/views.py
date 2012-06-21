@@ -294,7 +294,7 @@ def latestInventories(request):
                 time.append((new.timestamp))
                 reporter.append((new.user))
                 for standard in standards:
-                    if standard.beverage == new.beverage:
+                    if standard.beverage == new.beverage and standard.location == location:
                         print standard.beverage
                         row.append((new.beverage, new.units_reported, standard.order_when_below, standard.fill_to_standard))
 
