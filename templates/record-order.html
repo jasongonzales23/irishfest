@@ -3,12 +3,15 @@
 {% block base_content %}
 <h1>{{location.name}} - Enter Order</h1>
 <form action="/record-order/{{location.location_number}}" method="post">
+ <h3 class="errorHeading">You have <span class="num"></span> on your form.</h3>
+<h3 class="errorHeading">Please review all messages below before submitting again.</h3>
+
     {% csrf_token %}
     <ul class="form">
       {{ formset.as_ul }}
     </ul>
     <input type="submit" class="submit" value="Record Order"/>
-    <a href="/location/{{location.location_number}}">Cancel</a>
+    <a class="cancelButtonish" href="/location/{{location.location_number}}">Cancel</a>
 </form>
 
 {% endblock %}

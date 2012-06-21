@@ -2,6 +2,13 @@
 {% block body_class %}{% endblock %}{% block body_id %}latest-orders{% endblock %}
 
 {% block base_content %}
+
+{% for order in orders %}
+
+<p>{{ order.location }} - {{ order.beverage }} {{ order.units_ordered }}- {{ order.order_delivered }}</p>
+{% endfor %}
+
+
 {% for location, beverage, time, reporter in grid %}
 
 <h1>{{ location }} - {{ location.location_number }}</h1>

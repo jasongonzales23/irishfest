@@ -608,13 +608,13 @@ input[type="submit"] {
   float: none;
 }
 
-.buttonish {
+.buttonish, .cancelButtonish {
   display: inline-block;
   text-align: center;
   padding: 1px 0 3px 0;
 }
 
-button, .buttonish {
+button, .buttonish, .cancelButtonish {
   width: 49%;
   line-height: 2em;
   margin: 25px 0px;
@@ -639,9 +639,22 @@ button, .buttonish {
 }
 
 button a, button a:hover, button a:visited, a.buttonish,
-a.buttonish:hover, a.buttonish:visited {
+a.buttonish:hover, a.buttonish:visited, .cancelButtonish {
   text-decoration: none;
   color: #fff;
+}
+
+.cancelButtonish, .cancelButtonish:hover {
+  color: white;
+  background-image: linear-gradient(bottom, #4d4d4d 0%, #787878 50%);
+  background-image: -o-linear-gradient(bottom, #4d4d4d 0%, #787878 50%);
+  background-image: -moz-linear-gradient(bottom, #4d4d4d 0%, #787878 50%);
+  background-image: -webkit-linear-gradient(bottom, #4d4d4d 0%, #787878 50%);
+  background-image: -ms-linear-gradient(bottom, #4d4d4d 0%, #787878 50%);
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #4d4d4d), color-stop(0.5, #787878));
+  border: 1px solid #222;
+  text-shadow: 1px 1px 0px #1e574d;
+  width: 99%;
 }
 
 .js .helptext {

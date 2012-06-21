@@ -88,5 +88,21 @@ $('.login').on('click', function(e){
 });
 
 $('form').on('click', 'input', function(e){
-    $(this).val('');
+    var $this = $(this);
+    if(!$this.hasClass('labelish')){
+    $this.val('');
+    }
+    else {
+    $this.parent('li').next().find('input').val('');
+    }
 });
+
+//message for form errors
+
+var errorlist = $('.errorlist').length;
+if(errorlist >0 ){
+    var msg = errorlist > 1 ? ' problems' : ' problem';
+    $('.num').html($('.errorlist').length + msg);
+    $('.errorHeading').fadeIn();
+}
+
