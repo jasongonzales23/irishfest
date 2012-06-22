@@ -8,6 +8,8 @@ from inventory.views import orderHistory, inventoryHistory,startingInventory, no
 from inventory.views import recordDelivery, reportList, report, dailyReport
 from inventory.views import latestInventories, latestOrders, unfilledOrders
 from inventory.views import csvTotal, csvDailyReport
+from inventory.views import tokensCollected, tokensDelivered
+from inventory.views import recordTokenDelivery
 
 urlpatterns = patterns('',
     # Examples:
@@ -38,6 +40,9 @@ urlpatterns = patterns('',
     url(r'^report/unfilled-orders', unfilledOrders),
     url(r'^csv/report/total', csvTotal),
     url(r'^csv/report/(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/$',csvDailyReport),
+    url(r'^token/booth/(?P<location_number>[^\.]+)$', tokensDelivered),
+    url(r'^token/location/(?P<location_number>[^\.]+)$', tokensCollected),
+    url(r'^token/record-delivery/(?P<location_number>[^\.]+)$', recordTokenDelivery),
 )
 
 if settings.DEBUG:

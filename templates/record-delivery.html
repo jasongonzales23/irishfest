@@ -1,0 +1,9 @@
+{% extends "token-base.html" %}
+{% block base_content%}
+<form action="/token/record-delivery/{{ location.location_number }}" method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+
+<input type="submit" value="GO"/>
+</form>
+{% endblock %}

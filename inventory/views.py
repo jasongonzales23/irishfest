@@ -6,6 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from inventory.models import Beverage, Location, Inventory, Note, Order, InventoryForm, OrderForm, NoteForm
 from inventory.models import LocationStandard, InventoryGroup,OrderGroup
+from inventory.models import Token, TokenBooth, TokenDelivery, TokenCollection, TokenNote, TokenNoteForm
+from inventory.models import TokenDeliveryForm
+
 from django.template.defaultfilters import slugify
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q, Count, Sum, Max, Min
@@ -408,3 +411,41 @@ def csvDailyReport(request, year, month, day):
 
     return response
 
+def tokensDelivered(request, location_number):
+    location=TokenBooth.objects.get(location_number=location_number)
+    tokens=TokenDelivery.objects.filter(location=location).order_by('-timestamp')
+    
+    print location
+    print tokens
+
+    return render_to_response('token-delivery.html',
+            {'location':location ,'tokens':tokens},
+            context_instance=RequestContext(request)
+    )
+
+
+def recordTokenDelivery(request, location_number):
+    location=TokenBooth.objects.get(location_number=location_number)
+    form=TokenDeliveryForm()
+    if request.method=='POST':
+        form=TokenDeliveryForm(request.POST)
+        if form.is_valid():
+            tokendelivery=form.save(commit=False)
+            tokens=form.cleaned_data['tokens']
+            TokenDelivery(location=location,tokens=tokens,user=request.user).save()
+
+            return HttpResponseRedirect('/token/booth/' + location_number )
+        else:
+            return render_to_response('record-delivery.html',
+                {'form': form, 'location':location},
+                context_instance=RequestContext(request)
+            )
+
+    else:
+        return render_to_response('record-delivery.html',
+            {'form': form, 'location':location,},
+            context_instance=RequestContext(request)
+        )
+
+def tokensCollected(request, location_number):
+    return HttpResponse('hi')

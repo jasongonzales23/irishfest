@@ -1,6 +1,7 @@
 from django.contrib import admin
 from datetime import datetime
 from inventory.models import Beverage,Location, LocationStandard, Inventory, Order, Note, InventoryGroup
+from inventory.models import Token, TokenBooth, TokenDelivery, TokenCollection, TokenNote
 
 class InventoryGroupAdmin(admin.ModelAdmin):
     model=InventoryGroup
@@ -18,8 +19,8 @@ class OrderInlineAdmin(admin.TabularInline):
     model=Order
 
 class BeverageAdmin(admin.ModelAdmin):
-    list_display = ('name',)
-    extra = 5
+    list_display = ('name','tokenvalue')
+    #extra = 5
 
 class LocationAdmin(admin.ModelAdmin):
     list_display = ('name', 'location_number', 'organization',)
@@ -42,6 +43,20 @@ class InventoryAdmin(admin.ModelAdmin):
 class NoteAdmin(admin.ModelAdmin):
     list_display = ('location', 'timestamp', )
 
+class TokenAdmin(admin.ModelAdmin):
+    list_display = ('value',)
+
+class TokenBoothAdmin(admin.ModelAdmin):
+    list_display = ('name', 'location_number',)
+
+class TokenDeliveryAdmin(admin.ModelAdmin):
+    list_display = ('tokens','timestamp', 'user')
+
+class TokenCollectionAdmin(admin.ModelAdmin):
+    list_display = ('tokens', 'timestamp', 'user')
+
+
+
 #class OrderAdmin(admin.ModelAdmin):
     #list_display = ('location', 
 
@@ -52,3 +67,7 @@ admin.site.register(Inventory, InventoryAdmin)
 admin.site.register(Note, NoteAdmin)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(InventoryGroup, InventoryGroupAdmin)
+admin.site.register(Token, TokenAdmin)
+admin.site.register(TokenBooth, TokenBoothAdmin)
+admin.site.register(TokenDelivery, TokenDeliveryAdmin)
+admin.site.register(TokenCollection, TokenCollectionAdmin)

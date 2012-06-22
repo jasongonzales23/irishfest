@@ -11,6 +11,7 @@ class Html5NumInput(Input):
 
 class Beverage(models.Model):
     name=models.CharField(max_length=255)
+    tokenvalue=models.IntegerField(default=0)
 
     def __unicode__(self):
         return self.name
@@ -36,6 +37,7 @@ class OrderGroup(models.Model):
 
     def __unicode__(self):
         return str(self.id)
+
 
 class Order(models.Model):
     group=models.ForeignKey(OrderGroup)
@@ -98,10 +100,43 @@ class NoteForm(ModelForm):
     class Meta:
         model=Note
         fields=('content',)
-"""
-class DailyTotals(models.Model):
-    date=models.DateTimeField()
-    beverage=models.CharField(max_length=255)
-    daily_total=models.IntegerField()
-    grand_total=models.IntegerField()
-"""
+
+class Token(models.Model):
+    value=models.IntegerField(default=0)
+
+class TokenBooth(models.Model):
+    name=models.CharField(max_length=255)
+    location_number=models.CharField(max_length=255)
+
+    def __unicode__(self):
+        return self.name
+
+class TokenDelivery(models.Model):
+    location=models.ForeignKey(TokenBooth)
+    tokens=models.IntegerField(default=0)
+    timestamp=models.DateTimeField(auto_now=True)
+    user=models.ForeignKey(User)
+
+class TokenDeliveryForm(ModelForm):
+    tokens=forms.IntegerField(initial=0, widget=Html5NumInput)
+    class Meta:
+        model=TokenDelivery
+        fields=('tokens',)
+
+class TokenCollection(models.Model):
+    location=models.ForeignKey(Location)
+    tokens=models.IntegerField(default=0)
+    timestamp=models.DateTimeField(auto_now=True)
+    user=models.ForeignKey(User)
+
+class TokenNote(models.Model):
+    location=models.ForeignKey(Location)
+    timestamp=models.DateTimeField(auto_now=True)
+    content=models.TextField(max_length=50000)
+    user=models.ForeignKey(User)
+
+class TokenNoteForm(ModelForm):
+    class Meta:
+        model=Note
+        fields=('content',)
+
