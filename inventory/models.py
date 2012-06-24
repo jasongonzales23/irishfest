@@ -129,14 +129,32 @@ class TokenCollection(models.Model):
     timestamp=models.DateTimeField(auto_now=True)
     user=models.ForeignKey(User)
 
-class TokenNote(models.Model):
+class TokenCollectionForm(ModelForm):
+    tokens=forms.IntegerField(initial=0, widget=Html5NumInput)
+    class Meta:
+        model=TokenCollection
+        fields=('tokens',)
+
+class LocationTokenNote(models.Model):
     location=models.ForeignKey(Location)
     timestamp=models.DateTimeField(auto_now=True)
     content=models.TextField(max_length=50000)
     user=models.ForeignKey(User)
 
-class TokenNoteForm(ModelForm):
+class LocationTokenNoteForm(ModelForm):
     class Meta:
-        model=Note
+        model=LocationTokenNote
         fields=('content',)
+
+class BoothTokenNote(models.Model):
+    location=models.ForeignKey(TokenBooth)
+    timestamp=models.DateTimeField(auto_now=True)
+    content=models.TextField(max_length=50000)
+    user=models.ForeignKey(User)
+
+class BoothTokenNoteForm(ModelForm):
+    class Meta:
+        model=BoothTokenNote
+        fields=('content',)
+
 

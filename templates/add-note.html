@@ -1,12 +1,12 @@
-{% extends "base.html" %}
-{% block body_class %}{% endblock %}{% block body_id %}{% endblock %}
+{% extends basetemplate %}
+{% block body_class %}{{ href.class }}{% endblock %}{% block body_id %}{{ href.id }}{% endblock %}
 {% block base_content %}
 <h1>{{ location.name }}</h1>
-<form action="/add-note/{{location.location_number}}" method="post">    
+<form action="{{ href.form }}" method="post">
     {%csrf_token%}
     {{form.as_p}}
-<button type="submit">Save Note</button>
+<input type="submit" class="submit" value="Save Note"/>
+<a class="cancelButtonish" href="{{href.cancel}}">Cancel</a>
 </form>
 
-<a href="/notes/{{location.location_number}}">Cancel</a>
 {% endblock %}

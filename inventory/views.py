@@ -6,8 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from inventory.models import Beverage, Location, Inventory, Note, Order, InventoryForm, OrderForm, NoteForm
 from inventory.models import LocationStandard, InventoryGroup,OrderGroup
-from inventory.models import Token, TokenBooth, TokenDelivery, TokenCollection, TokenNote, TokenNoteForm
-from inventory.models import TokenDeliveryForm
+from inventory.models import Token, TokenBooth, TokenDelivery, TokenCollection
+from inventory.models import TokenDeliveryForm,TokenCollectionForm
+from inventory.models import LocationTokenNote, LocationTokenNoteForm, BoothTokenNote,BoothTokenNoteForm
 
 from django.template.defaultfilters import slugify
 from django.core.exceptions import ObjectDoesNotExist
@@ -30,9 +31,12 @@ def showLastInventory(request, location_number):
 
     except ObjectDoesNotExist:
         return HttpResponse('no location for that')
+    try:
+        latest = Inventory.objects.filter(location=location).latest('group')
+        inventory = Inventory.objects.filter(group=latest.group.id).order_by('beverage__name')
+    except ObjectDoesNotExist:
+        inventory =  LocationStandard.objects.filter(location=location).order_by('beverage__name')
 
-    latest = Inventory.objects.filter(location=location).latest('group')
-    inventory = Inventory.objects.filter(group=latest.group.id).order_by('beverage__name')
     standards = LocationStandard.objects.filter(location=location).order_by('beverage__name')
 
     return render_to_response('location.html',
@@ -143,15 +147,18 @@ def startingInventory(request, location_number):
 def notes(request, location_number):
     location=Location.objects.get(location_number=location_number)
     notes=Note.objects.filter(location=location).order_by('-timestamp')
-
+    basetemplate = "base.html"
+    notehref= "/add-note/" + location.location_number
     return render_to_response('notes.html',
-        {'location':location, 'notes':notes},
+            {'location':location, 'notes':notes, 'notehref':notehref, 'basetemplate':basetemplate},
         context_instance = RequestContext(request)
     )
 
 @login_required
 def addNote(request, location_number):
     location=Location.objects.get(location_number=location_number)
+    basetemplate = "base.html"
+    href={'cancel': "/notes/" + location.location_number, 'form': "/add-note/" + location.location_number}
     if request.method=='POST':
         form=NoteForm(request.POST)
         if form.is_valid():
@@ -163,7 +170,7 @@ def addNote(request, location_number):
     else:
         form=NoteForm()
         return render_to_response('add-note.html',
-            {'form': form, 'location':location},
+            {'form': form, 'location':location, 'href': href, 'basetemplate': basetemplate},
             context_instance=RequestContext(request)
         )
 
@@ -414,18 +421,17 @@ def csvDailyReport(request, year, month, day):
 def tokensDelivered(request, location_number):
     location=TokenBooth.objects.get(location_number=location_number)
     tokens=TokenDelivery.objects.filter(location=location).order_by('-timestamp')
-    
-    print location
-    print tokens
-
+    locationtype = "booth"
     return render_to_response('token-delivery.html',
-            {'location':location ,'tokens':tokens},
+            {'location':location ,'tokens':tokens, 'locationtype': locationtype},
             context_instance=RequestContext(request)
     )
 
 
 def recordTokenDelivery(request, location_number):
     location=TokenBooth.objects.get(location_number=location_number)
+    locationtype = "booth"
+
     form=TokenDeliveryForm()
     if request.method=='POST':
         form=TokenDeliveryForm(request.POST)
@@ -437,7 +443,7 @@ def recordTokenDelivery(request, location_number):
             return HttpResponseRedirect('/token/booth/' + location_number )
         else:
             return render_to_response('record-delivery.html',
-                {'form': form, 'location':location},
+                    {'form': form, 'location':location, 'locationtype': locationtype},
                 context_instance=RequestContext(request)
             )
 
@@ -448,4 +454,94 @@ def recordTokenDelivery(request, location_number):
         )
 
 def tokensCollected(request, location_number):
-    return HttpResponse('hi')
+    location=Location.objects.get(location_number=location_number)
+    tokens=TokenCollection.objects.filter(location=location).order_by('-timestamp')
+    
+    return render_to_response('tokens-collected.html',
+            {'location':location ,'tokens':tokens},
+            context_instance=RequestContext(request)
+    )
+
+def recordTokenCollection(request, location_number):
+    location=Location.objects.get(location_number=location_number)
+    form=TokenCollectionForm()
+    if request.method=='POST':
+        form=TokenCollectionForm(request.POST)
+        if form.is_valid():
+            tokencollection=form.save(commit=False)
+            tokens=form.cleaned_data['tokens']
+            TokenCollection(location=location,tokens=tokens,user=request.user).save()
+
+            return HttpResponseRedirect('/token/location/' + location_number )
+        else:
+            return render_to_response('record-collection.html',
+                {'form': form, 'location':location},
+                context_instance=RequestContext(request)
+            )
+
+    else:
+        return render_to_response('record-collection.html',
+            {'form': form, 'location':location,},
+            context_instance=RequestContext(request)
+        )
+
+def addBoothTokenNote(request, location_number):
+    location=TokenBooth.objects.get(location_number=location_number)
+    basetemplate = "token-base.html"
+    href={'cancel': "/token/note/booth/" + location.location_number, 'form': "/token/add-note/booth/" + location.location_number}
+    locationtype = "booth"
+    if request.method=='POST':
+        form=BoothTokenNoteForm(request.POST)
+        if form.is_valid():
+            note=form.save(commit=False)
+            content=form.cleaned_data['content']
+            BoothTokenNote(content=content, location=location, user=request.user).save()
+
+        return HttpResponseRedirect('/token/note/booth/' + location_number )
+    else:
+        form=BoothTokenNoteForm()
+        return render_to_response('add-note.html',
+            {'form': form, 'location':location, 'basetemplate': basetemplate, 'href': href, 'locationtype': locationtype},
+            context_instance = RequestContext(request)
+            )
+
+def addLocationTokenNote(request, location_number):
+    location=Location.objects.get(location_number=location_number)
+    basetemplate = "token-base.html"
+    href={'cancel': "/token/note/location/" + location.location_number, 'form': "/token/add-note/location/" + location.location_number}
+    if request.method=='POST':
+        form=LocationTokenNoteForm(request.POST)
+        if form.is_valid():
+            note=form.save(commit=False)
+            content=form.cleaned_data['content']
+            LocationTokenNote(content=content, location=location, user=request.user).save()
+
+        return HttpResponseRedirect('/token/note/location/' + location_number )
+    else:
+        form=NoteForm()
+        return render_to_response('add-note.html',
+                {'form': form, 'location':location, 'basetemplate': basetemplate, 'href': href},
+            context_instance = RequestContext(request)
+            )
+
+def locationTokenNote(request, location_number):
+    location=Location.objects.get(location_number=location_number)
+    notes=LocationTokenNote.objects.filter(location=location).order_by('-timestamp')
+    basetemplate = "token-base.html"
+    notehref = "/token/add-note/location/" + location.location_number
+    return render_to_response('notes.html',
+            {'location':location, 'notes':notes, 'basetemplate':basetemplate, 'notehref':notehref},
+        context_instance = RequestContext(request)
+    )
+
+def boothTokenNote(request, location_number):
+    location=TokenBooth.objects.get(location_number=location_number)
+    notes=BoothTokenNote.objects.filter(location=location).order_by('-timestamp')
+    basetemplate = "token-base.html"
+    notehref = "/token/add-note/booth/" + location.location_number
+    locationtype = "booth"
+    return render_to_response('notes.html',
+            {'location':location, 'notes':notes, 'basetemplate':basetemplate, 'notehref':notehref, 'locationtype': locationtype},
+        context_instance = RequestContext(request)
+    )
+

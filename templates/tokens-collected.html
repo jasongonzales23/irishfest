@@ -1,0 +1,13 @@
+{% extends "token-base.html" %}
+
+{% block base_content %}
+<h2>{{ location }}</h2>
+
+{% for token in tokens %}
+<p>{{ token.tokens }} - {{ token.timestamp }} - {{ token.user }}</p>
+
+{% endfor %}
+
+<button><a href="/token/record-collection/{{ location.location_number }}">Record Token Collection </a></button>
+
+{% endblock %}

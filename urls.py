@@ -9,7 +9,9 @@ from inventory.views import recordDelivery, reportList, report, dailyReport
 from inventory.views import latestInventories, latestOrders, unfilledOrders
 from inventory.views import csvTotal, csvDailyReport
 from inventory.views import tokensCollected, tokensDelivered
-from inventory.views import recordTokenDelivery
+from inventory.views import recordTokenDelivery, recordTokenCollection
+from inventory.views import addLocationTokenNote, addBoothTokenNote
+from inventory.views import locationTokenNote, boothTokenNote, addBoothTokenNote, addLocationTokenNote
 
 urlpatterns = patterns('',
     # Examples:
@@ -32,7 +34,6 @@ urlpatterns = patterns('',
     url(r'^add-note/(?P<location_number>[^\.]+)$', addNote),
     url(r'^record-order/(?P<location_number>[^\.]+)$', recordOrder),
     url(r'^record-delivery/(?P<location_number>[^\.]+)/(?P<order_id>[^\.]+)/(?P<order_delivered>[^\.]+)$', recordDelivery),
-    #url(r'^report-list/', reportList),
     url(r'^report/(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/$',dailyReport),
     url(r'^report/total', report),
     url(r'^report/latest-inventories', latestInventories),
@@ -43,6 +44,11 @@ urlpatterns = patterns('',
     url(r'^token/booth/(?P<location_number>[^\.]+)$', tokensDelivered),
     url(r'^token/location/(?P<location_number>[^\.]+)$', tokensCollected),
     url(r'^token/record-delivery/(?P<location_number>[^\.]+)$', recordTokenDelivery),
+    url(r'^token/record-collection/(?P<location_number>[^\.]+)$', recordTokenCollection),
+    url(r'^token/note/location/(?P<location_number>[^\.]+)$',locationTokenNote),
+    url(r'^token/note/booth/(?P<location_number>[^\.]+)$', boothTokenNote),
+    url(r'^token/add-note/location/(?P<location_number>[^\.]+)$',addLocationTokenNote),
+    url(r'^token/add-note/booth/(?P<location_number>[^\.]+)$', addBoothTokenNote),
 )
 
 if settings.DEBUG:

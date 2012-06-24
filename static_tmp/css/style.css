@@ -657,6 +657,10 @@ a.buttonish:hover, a.buttonish:visited, .cancelButtonish {
   width: 99%;
 }
 
+.cancelButtonish.small {
+  width: 377px;
+}
+
 .js .helptext {
   display: none;
   position: absolute;

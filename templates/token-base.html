@@ -18,14 +18,16 @@
 	<div id="container">
 	    <header>
 		<div class="row">
-		    <ul id="nav">
-			<li class="last-inventory"><a href="/location/{{location.location_number}}">Last Reported Inventory</a></li>
-			<li class="order-history"><a href="/order-history/{{location.location_number}}">Order History</a></li>
-			<li class="inventory-history" ><a href="/inventory-history/{{location.location_number}}">Inventory History</a></li>
-			<li class="starting-inventory"><a href="/starting-inventory/{{location.location_number}}">Starting Inventory</a></li>
-			<li class="notes"><a href="/notes/{{location.location_number}}">Notes</a></li>
-			<li class="login"><a href="/accounts/logout/">Logout</a></li>
-		    </ul>		
+      <ul id="nav">
+      {% if locationtype == "booth" %}
+        <li class="tokens-delivered"><a href="/token/booth/{{location.location_number}}">Tokens Delivered</a></li>
+        <li class="booth-notes"><a href="/token/note/booth/{{location.location_number}}">Notes</a></li>
+      {% else %}
+        <li class="tokens-delivered"><a href="/token/location/{{location.location_number}}">Tokens Collected</a></li>
+        <li class="location-notes"><a href="/token/note/location/{{location.location_number}}">Notes</a></li>
+      {% endif %}
+        <li class="login"><a href="/accounts/logout/">Logout</a></li>
+      </ul>		
 		    {% block header %}
 		    {% endblock %}
 		</div>

@@ -1,7 +1,8 @@
 from django.contrib import admin
 from datetime import datetime
 from inventory.models import Beverage,Location, LocationStandard, Inventory, Order, Note, InventoryGroup
-from inventory.models import Token, TokenBooth, TokenDelivery, TokenCollection, TokenNote
+from inventory.models import Token, TokenBooth, TokenDelivery, TokenCollection
+from inventory.models import BoothTokenNote, LocationTokenNote
 
 class InventoryGroupAdmin(admin.ModelAdmin):
     model=InventoryGroup
