@@ -2,11 +2,24 @@
 
 {% block base_content %}
 <table>
+  <thead>
+    <tr>
+      <th>Beverage Station</th>
     {% for day in dates %}
-      {{ day|date:"l" }}
+    <th>{{ day|date:"l" }}</th>
     {% endfor %}
-    {% for location, row in grid %}
-    <p>{{ location.name }} - {% for total in row %} {{ total }} {% endfor %}</p>
+    <th>Total</th>
+  </tr>
+  </thead><tbody>
+  {% for location, row in grid %}
+  <tr>
+    <td>{{ location.name }}</td>
+    {% for total in row %}
+    <td>{{ total }}</td>
+    {% endfor %}
+  </tr>
     {% endfor  %}
+  </tbody>
+
 </table>
 {% endblock %}
