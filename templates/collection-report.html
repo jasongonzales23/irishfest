@@ -1,0 +1,12 @@
+{% extends "tokenreport-base.html" %}
+
+{% block base_content %}
+<table>
+    {% for day in dates %}
+      {{ day|date:"l" }}
+    {% endfor %}
+    {% for location, row in grid %}
+    <p>{{ location.name }} - {% for total in row %} {{ total }} {% endfor %}</p>
+    {% endfor  %}
+</table>
+{% endblock %}

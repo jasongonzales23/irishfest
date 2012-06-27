@@ -12,6 +12,7 @@ from inventory.views import tokensCollected, tokensDelivered
 from inventory.views import recordTokenDelivery, recordTokenCollection
 from inventory.views import addLocationTokenNote, addBoothTokenNote
 from inventory.views import locationTokenNote, boothTokenNote, addBoothTokenNote, addLocationTokenNote
+from inventory.views import collectionReport, deliveryReport, reconciliationReport
 
 urlpatterns = patterns('',
     # Examples:
@@ -49,6 +50,9 @@ urlpatterns = patterns('',
     url(r'^token/note/booth/(?P<location_number>[^\.]+)$', boothTokenNote),
     url(r'^token/add-note/location/(?P<location_number>[^\.]+)$',addLocationTokenNote),
     url(r'^token/add-note/booth/(?P<location_number>[^\.]+)$', addBoothTokenNote),
+    url(r'^token/report/collection', collectionReport),
+    url(r'^token/report/delivery', deliveryReport),
+    url(r'^token/report/reconciliation', reconciliationReport),
 )
 
 if settings.DEBUG:

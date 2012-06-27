@@ -30,7 +30,7 @@
 	    <td>{{ i.beverage.name }}</td>
       {% for ls in i.beverage.locationstandard_set.all %}
       {% if ls.location == location %}
-      {% if i.unit_reported %}
+      {% if i.units_reported %}
       <td class="{% if i.units_reported <= ls.order_when_below %}low{% endif %}">{{ i.units_reported }}</td>
       {% else %}
       <td class="low">0</td>

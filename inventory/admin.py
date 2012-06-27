@@ -51,10 +51,10 @@ class TokenBoothAdmin(admin.ModelAdmin):
     list_display = ('name', 'location_number',)
 
 class TokenDeliveryAdmin(admin.ModelAdmin):
-    list_display = ('tokens','timestamp', 'user')
+    list_display = ('location','tokens','timestamp', 'user')
 
 class TokenCollectionAdmin(admin.ModelAdmin):
-    list_display = ('tokens', 'timestamp', 'user')
+    list_display = ('location','tokens', 'timestamp', 'user')
 
 
 

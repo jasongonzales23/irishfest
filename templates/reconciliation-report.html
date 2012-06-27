@@ -1,0 +1,47 @@
+{% extends "tokenreport-base.html" %}
+
+{% block base_content %}
+<table>
+  <thead>
+  <tr>
+    <th>Beverage Station</th>
+    {% for day in dates %}
+    <th>
+      {{ day|date:"l" }}
+    </th>
+    {% endfor %}
+    <th>Token Total</th>
+    <th>Inventory Delivered</th>
+    <th>Token Delta</th>
+  </tr>
+</thead>
+<tbody>
+    {% for location, totals, stats in grid %}
+  <tr>
+    <td>{{ location.name }}</td>
+    {% for total in totals %}
+     <td>
+      {{ total }}
+    </td>
+    {% endfor %}
+    <td>{{ stats.0 }}</td>
+    <td>${{ stats.1 }}</td>
+    <td>{{ stats.2 }}%</td>
+  </tr>
+  {% endfor  %}
+  <tr>
+    <td>Grand Total</td>
+    {% for daytotals, row in grandtotal %}
+    {% for daytotal in daytotals %}
+    <td>
+      {{ daytotal }}
+    </td>
+    {% endfor %}
+    <td>{{ row.0 }}</td>
+    <td>${{ row.1 }}</td>
+    <td>{{ row.2 }}%</td>
+  {% endfor %}
+  </tr>
+</tbody>
+</table>
+{% endblock %}

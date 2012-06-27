@@ -1,3 +1,4 @@
+from __future__ import division
 from django.conf.urls.defaults import *
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template.context import RequestContext
@@ -23,6 +24,7 @@ from datetime import timedelta
 from django.contrib.auth.decorators import login_required
 import itertools
 
+
 @login_required
 def showLastInventory(request, location_number):
     #change to get obj or 404
@@ -35,7 +37,7 @@ def showLastInventory(request, location_number):
         latest = Inventory.objects.filter(location=location).latest('group')
         inventory = Inventory.objects.filter(group=latest.group.id).order_by('beverage__name')
     except ObjectDoesNotExist:
-        inventory =  LocationStandard.objects.filter(location=location).order_by('beverage__name')
+        inventory = LocationStandard.objects.filter(location=location).order_by('beverage__name')
 
     standards = LocationStandard.objects.filter(location=location).order_by('beverage__name')
 
@@ -545,3 +547,116 @@ def boothTokenNote(request, location_number):
         context_instance = RequestContext(request)
     )
 
+def deliveryReport(request):
+    locations = TokenBooth.objects.order_by('location_number')
+    tokens = TokenDelivery.objects.order_by('location', 'timestamp')
+    dates = TokenDelivery.objects.dates('timestamp','day');
+
+    grid = []
+    for location in locations:
+        row = []
+        grid.append((location, row))
+        rowtotal = 0
+        for date in dates:
+            daytotal = 0
+            for token in tokens:
+                if token.location == location and token.timestamp.date() == date.date():
+                    daytotal += token.tokens
+                    rowtotal += token.tokens
+            row.append(daytotal)
+        row.append(rowtotal)
+    print grid
+    return render_to_response('delivery-report.html',
+        {'tokens':tokens, 'grid':grid, 'dates': dates,},
+        context_instance = RequestContext(request)
+    )
+    
+def collectionReport(request):
+    locations = Location.objects.order_by('location_number')
+    tokens = TokenCollection.objects.order_by('location', 'timestamp')
+    dates = TokenCollection.objects.dates('timestamp','day');
+
+    grid = []
+    for location in locations:
+        row = []
+        grid.append((location, row))
+        rowtotal = 0
+        for date in dates:
+            daytotal = 0
+            for token in tokens:
+                if token.location == location and token.timestamp.date() == date.date():
+                    daytotal += token.tokens
+                    rowtotal += token.tokens
+            row.append(daytotal)
+        row.append(rowtotal)
+    return render_to_response('collection-report.html',
+        {'tokens':tokens, 'grid':grid, 'dates': dates,},
+        context_instance = RequestContext(request)
+    )
+
+def reconciliationReport(request):
+    locations = Location.objects.order_by('location_number')
+    tokens = TokenCollection.objects.order_by('location', 'timestamp')
+    dates = TokenCollection.objects.dates('timestamp','day');
+    orders = Order.objects.order_by('location__location_number')
+    tokenval = 2
+    grid = []
+    for location in locations:
+        row = []
+        daytotals = []
+        grid.append((location, daytotals, row))
+        rowtotal = 0
+        for date in dates:
+            daytotal = 0
+            for token in tokens:
+                if token.location == location and token.timestamp.date() == date.date():
+                    daytotal += token.tokens
+                    rowtotal += token.tokens
+            daytotals.append(daytotal)
+        #row.append(daytotals)
+        row.append(rowtotal)
+        
+        totalinv = 0
+        for order in orders:
+            if order.location == location:
+                totalinv += order.units_ordered * order.beverage.tokenvalue
+        totalinv = totalinv * tokenval
+        row.append(totalinv)
+        if rowtotal == 0:
+            tokendelta = 'NA'
+        else:
+            tokendelta = round((-100 * ((totalinv - (rowtotal * tokenval)) / totalinv )),2)
+        row.append(tokendelta)
+    
+    grandtotal = []
+    daytotals = []
+    row = []
+    grandtotal.append((daytotals, row))
+    tokentotal = 0
+    for date in dates:
+        daytotal = 0
+        for token in tokens:
+            if token.timestamp.date() == date.date():
+                daytotal += token.tokens
+                tokentotal += token.tokens
+        daytotals.append(daytotal)
+
+    invdelivered = 0
+    for order in orders:
+        invdelivered += order.units_ordered * order.beverage.tokenvalue
+    invdelivered = invdelivered * tokenval
+    row.append(tokentotal)
+    row.append(invdelivered)
+
+    if invdelivered == 0:
+        granddelta = 'NA'
+    else:
+        granddelta = round((-100 * ((invdelivered - (tokentotal * tokenval)) / invdelivered)), 2)
+
+    row.append(granddelta)
+    print grid
+    print grandtotal
+    return render_to_response('reconciliation-report.html',
+            {'tokens':tokens, 'grid':grid, 'dates': dates, 'grandtotal':grandtotal},
+        context_instance = RequestContext(request)
+    )
