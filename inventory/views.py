@@ -547,29 +547,6 @@ def boothTokenNote(request, location_number):
         context_instance = RequestContext(request)
     )
 
-def deliveryReport(request):
-    locations = TokenBooth.objects.order_by('location_number')
-    tokens = TokenDelivery.objects.order_by('location', 'timestamp')
-    dates = TokenDelivery.objects.dates('timestamp','day');
-
-    grid = []
-    for location in locations:
-        row = []
-        grid.append((location, row))
-        rowtotal = 0
-        for date in dates:
-            daytotal = 0
-            for token in tokens:
-                if token.location == location and token.timestamp.date() == date.date():
-                    daytotal += token.tokens
-                    rowtotal += token.tokens
-            row.append(daytotal)
-        row.append(rowtotal)
-    print grid
-    return render_to_response('delivery-report.html',
-        {'tokens':tokens, 'grid':grid, 'dates': dates,},
-        context_instance = RequestContext(request)
-    )
     
 def collectionReport(request):
     locations = Location.objects.order_by('location_number')
@@ -589,8 +566,55 @@ def collectionReport(request):
                     rowtotal += token.tokens
             row.append(daytotal)
         row.append(rowtotal)
+
+    grandtotal = []
+    tokentotal = 0
+    for date in dates:
+        daytotal = 0
+        for token in tokens:
+            if token.timestamp.date() == date.date():
+                daytotal += token.tokens
+                tokentotal += token.tokens
+        grandtotal.append(daytotal)
+    grandtotal.append(tokentotal)
+
     return render_to_response('collection-report.html',
-        {'tokens':tokens, 'grid':grid, 'dates': dates,},
+            {'tokens':tokens, 'grid':grid, 'dates': dates,'grandtotal':grandtotal,},
+        context_instance = RequestContext(request)
+    )
+
+def deliveryReport(request):
+    locations = TokenBooth.objects.order_by('location_number')
+    tokens = TokenDelivery.objects.order_by('location', 'timestamp')
+    dates = TokenDelivery.objects.dates('timestamp','day');
+
+    grid = []
+    for location in locations:
+        row = []
+        grid.append((location, row))
+        rowtotal = 0
+        for date in dates:
+            daytotal = 0
+            for token in tokens:
+                if token.location == location and token.timestamp.date() == date.date():
+                    daytotal += token.tokens
+                    rowtotal += token.tokens
+            row.append(daytotal)
+        row.append(rowtotal)
+
+    grandtotal = []
+    tokentotal = 0
+    for date in dates:
+        daytotal = 0
+        for token in tokens:
+            if token.timestamp.date() == date.date():
+                daytotal += token.tokens
+                tokentotal += token.tokens
+        grandtotal.append(daytotal)
+    grandtotal.append(tokentotal)
+
+    return render_to_response('delivery-report.html',
+            {'tokens':tokens, 'grid':grid, 'dates': dates,'grandtotal': grandtotal,},
         context_instance = RequestContext(request)
     )
 

@@ -20,6 +20,14 @@
   </tr>
     {% endfor  %}
   </tbody>
+  <tr>
+    <td>Grand Total</td>
+    {% for daytotal in grandtotal %}
+    <td>
+      {{ daytotal }}
+    </td>
+    {% endfor %}
+  </tr>
 
 </table>
 {% endblock %}
