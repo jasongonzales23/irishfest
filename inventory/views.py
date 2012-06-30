@@ -646,7 +646,7 @@ def reconciliationReport(request):
                 totalinv += order.units_ordered * order.beverage.tokenvalue
         totalinv = totalinv * tokenval
         row.append(totalinv)
-        if rowtotal == 0:
+        if rowtotal == 0 or totalinv == 0:
             tokendelta = 'NA'
         else:
             tokendelta = round((-100 * ((totalinv - (rowtotal * tokenval)) / totalinv )),2)
