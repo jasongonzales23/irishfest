@@ -583,6 +583,52 @@ def collectionReport(request):
         context_instance = RequestContext(request)
     )
 
+def csvCollectionReport(request):
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment;filename=token-collection-report.csv'
+    writer = csv.writer(response)
+    
+    locations = Location.objects.order_by('location_number')
+    tokens = TokenCollection.objects.order_by('location', 'timestamp')
+    dates = TokenCollection.objects.dates('timestamp','day');
+    
+    heading= ['Token Collection Report']
+    writer.writerow(heading)
+    daterow = ['Beverage Station']
+    for date in dates:
+        daterow.append(date.date())
+
+    daterow.append('Total')
+    writer.writerow(daterow)
+
+    for location in locations:
+        row = []
+        rowtotal = 0
+        row.append(location)
+        for date in dates:
+            daytotal = 0
+            for token in tokens:
+                if token.location == location and token.timestamp.date() == date.date():
+                    daytotal += token.tokens
+                    rowtotal += token.tokens
+            row.append(daytotal)
+        row.append(rowtotal)
+        writer.writerow(row)
+    grandtotal = ['Grand Total']
+
+    tokentotal = 0
+    for date in dates:
+        daytotal = 0
+        for token in tokens:
+            if token.timestamp.date() == date.date():
+                daytotal += token.tokens
+                tokentotal += token.tokens
+        grandtotal.append(daytotal)
+    grandtotal.append(tokentotal)
+    
+    writer.writerow(grandtotal)
+    return response
+
 def deliveryReport(request):
     locations = TokenBooth.objects.order_by('location_number')
     tokens = TokenDelivery.objects.order_by('location', 'timestamp')
@@ -617,6 +663,51 @@ def deliveryReport(request):
             {'tokens':tokens, 'grid':grid, 'dates': dates,'grandtotal': grandtotal,},
         context_instance = RequestContext(request)
     )
+
+def csvDeliveryReport(request):
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment;filename=token-delivery-report.csv'
+    writer = csv.writer(response)
+
+    locations = TokenBooth.objects.order_by('location_number')
+    tokens = TokenDelivery.objects.order_by('location', 'timestamp')
+    dates = TokenDelivery.objects.dates('timestamp','day');
+    
+    heading= ['Token Collection Report']
+    writer.writerow(heading)
+    daterow = ['Beverage Station']
+    for date in dates:
+        daterow.append(date.date())
+    daterow.append('Total')
+    writer.writerow(daterow)
+
+    for location in locations:
+        row = []
+        row.append(location)
+        rowtotal = 0
+        for date in dates:
+            daytotal = 0
+            for token in tokens:
+                if token.location == location and token.timestamp.date() == date.date():
+                    daytotal += token.tokens
+                    rowtotal += token.tokens
+            row.append(daytotal)
+        row.append(rowtotal)
+        writer.writerow(row)
+
+    grandtotal = ['Grand Total']
+    tokentotal = 0
+    for date in dates:
+        daytotal = 0
+        for token in tokens:
+            if token.timestamp.date() == date.date():
+                daytotal += token.tokens
+                tokentotal += token.tokens
+        grandtotal.append(daytotal)
+    grandtotal.append(tokentotal)
+    writer.writerow(grandtotal)
+
+    return response
 
 def reconciliationReport(request):
     locations = Location.objects.order_by('location_number')
@@ -678,9 +769,82 @@ def reconciliationReport(request):
         granddelta = round((-100 * ((invdelivered - (tokentotal * tokenval)) / invdelivered)), 2)
 
     row.append(granddelta)
-    print grid
-    print grandtotal
+
     return render_to_response('reconciliation-report.html',
             {'tokens':tokens, 'grid':grid, 'dates': dates, 'grandtotal':grandtotal},
         context_instance = RequestContext(request)
     )
+
+def csvReconciliationReport(request):
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment;filename=token-reconciliation-report.csv'
+
+    writer = csv.writer(response)
+
+    locations = Location.objects.order_by('location_number')
+    tokens = TokenCollection.objects.order_by('location', 'timestamp')
+    dates = TokenCollection.objects.dates('timestamp','day');
+    orders = Order.objects.order_by('location__location_number')
+
+    heading= ['Token Reconciliation Report']
+    writer.writerow(heading)
+    daterow = ['Beverage Station']
+    for date in dates:
+        daterow.append(date.date())
+    daterow.append('Total')
+    writer.writerow(daterow)
+
+    tokenval = 2
+    for location in locations:
+        row = []
+        row.append(location) 
+        rowtotal = 0
+        for date in dates:
+            daytotal = 0
+            for token in tokens:
+                if token.location == location and token.timestamp.date() == date.date():
+                    daytotal += token.tokens
+                    rowtotal += token.tokens
+            row.append(daytotal)
+        row.append(rowtotal)
+        
+        totalinv = 0
+        for order in orders:
+            if order.location == location:
+                totalinv += order.units_ordered * order.beverage.tokenvalue
+        totalinv = totalinv * tokenval
+        row.append(totalinv)
+        if rowtotal == 0 or totalinv == 0:
+            tokendelta = 'NA'
+        else:
+            tokendelta = round((-100 * ((totalinv - (rowtotal * tokenval)) / totalinv )),2)
+        row.append(tokendelta)
+        writer.writerow(row)
+
+    grandtotal = ['Grand Totals']
+    tokentotal = 0
+    for date in dates:
+        daytotal = 0
+        for token in tokens:
+            if token.timestamp.date() == date.date():
+                daytotal += token.tokens
+                tokentotal += token.tokens
+        grandtotal.append(daytotal)
+
+    invdelivered = 0
+    for order in orders:
+        invdelivered += order.units_ordered * order.beverage.tokenvalue
+    invdelivered = invdelivered * tokenval
+    grandtotal.append(tokentotal)
+    grandtotal.append(invdelivered)
+
+    if invdelivered == 0:
+        granddelta = 'NA'
+    else:
+        granddelta = round((-100 * ((invdelivered - (tokentotal * tokenval)) / invdelivered)), 2)
+
+    grandtotal.append(granddelta)
+    writer.writerow(grandtotal)
+
+    return response
+
