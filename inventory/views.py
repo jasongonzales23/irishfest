@@ -791,7 +791,10 @@ def csvReconciliationReport(request):
     daterow = ['Beverage Station']
     for date in dates:
         daterow.append(date.date())
-    daterow.append('Total')
+    daterow.append('Token Total')
+    daterow.append('Inventory Delivered in $')
+    daterow.append('Token Delta as %')
+
     writer.writerow(daterow)
 
     tokenval = 2
@@ -837,7 +840,7 @@ def csvReconciliationReport(request):
     invdelivered = invdelivered * tokenval
     grandtotal.append(tokentotal)
     grandtotal.append(invdelivered)
-
+    
     if invdelivered == 0:
         granddelta = 'NA'
     else:
