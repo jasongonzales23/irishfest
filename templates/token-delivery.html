@@ -1,11 +1,25 @@
 {% extends "token-base.html" %}
 {% block base_content%}
-<h2>{{ location }}</h2>
+<h2>{{ location }} - {{ location.location_number }}</h2>
 
+<div class="table-wrap">
+  <table>
+	  <thead>
+	    <tr>
+        <th>Tokens Delivered</th>
+        <th>Date/Time Collected</th>
+        <th>Reporter</th>
+	    </tr>
+    </thead>
 {% for token in tokens %}
-<p>{{ token.tokens }} - {{ token.timestamp }} - {{ token.user }}</p>
-
+<tr>
+  <td>{{ token.tokens }}</td>
+  <td>{{ token.timestamp }}</td>
+  <td>{{ token.user.first_name }} {{ token.user.last_name }}</td>
+</tr>
 {% endfor %}
+</table>
+</div>
 
 <button><a href="/token/record-delivery/{{ location.location_number }}">Record Token Delivery </a></button>
 

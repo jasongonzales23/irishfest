@@ -451,7 +451,7 @@ def recordTokenDelivery(request, location_number):
 
     else:
         return render_to_response('record-delivery.html',
-            {'form': form, 'location':location,},
+                {'form': form, 'location':location,'locationtype':locationtype},
             context_instance=RequestContext(request)
         )
 

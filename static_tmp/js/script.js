@@ -49,6 +49,9 @@ var confirmSubmit = function(e){
 
 
 $('form').on('click', '.submit', function(e){
+    if ($(this).hasClass('login')){
+    return;
+    }
     confirmSubmit();
     return false;
 });
@@ -82,7 +85,7 @@ var confirmLogout = function(e){
    
 }
 
-$('.login').on('click', function(e){
+$('.logout').on('click', function(e){
     confirmLogout();
     return false;
 });

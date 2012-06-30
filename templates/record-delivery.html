@@ -1,9 +1,12 @@
 {% extends "token-base.html" %}
 {% block base_content%}
+<h1>{{ location }}</h1>
+<h2>Record Token Delivery</h2>
 <form action="/token/record-delivery/{{ location.location_number }}" method="post">
   {% csrf_token %}
   {{ form.as_p }}
 
-<input type="submit" class="submit" value="GO"/>
+<input type="submit" class="submit" value="Submit Tokens Delivered"/>
+<a class="cancelButtonish" href="/token/booth/{{location.location_number}}">Cancel</a>
 </form>
 {% endblock %}

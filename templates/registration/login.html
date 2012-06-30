@@ -4,7 +4,7 @@
 {% block body_class %}user-account{% endblock %}
 {% block body_id %}login{% endblock %}
 {% block base_content %}
-    <div class="main-content">
+<div class="main-content">
 	<div class="column">
 	    <h2>Sign In</h2>
 	    <!--<h4>{% trans "Don't have an account" %}? <a href="{% url registration_register %}">{% trans "Create one" %}!</a></h4>-->
@@ -13,9 +13,9 @@
 		{{ form.as_p }}
 		
 		<!--<p><a href="{% url auth_password_reset %}" class="forgot-password">{% trans "Forgot your password" %}?</a></p>-->
-		<input type="submit" value="{% trans 'Sign Me In' %}" />
+		<input class="submit login" type="submit" value="{% trans 'Sign Me In' %}" />
 		<input type="hidden" name="next" value="{{ next }}" />
 	    </form>
-	</div>
+</div>
     </div>
 {% endblock %}
