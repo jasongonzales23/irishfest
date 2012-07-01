@@ -420,6 +420,7 @@ def csvDailyReport(request, year, month, day):
 
     return response
 
+@login_required
 def tokensDelivered(request, location_number):
     location=TokenBooth.objects.get(location_number=location_number)
     tokens=TokenDelivery.objects.filter(location=location).order_by('-timestamp')
@@ -429,7 +430,7 @@ def tokensDelivered(request, location_number):
             context_instance=RequestContext(request)
     )
 
-
+@login_required
 def recordTokenDelivery(request, location_number):
     location=TokenBooth.objects.get(location_number=location_number)
     locationtype = "booth"
@@ -455,6 +456,7 @@ def recordTokenDelivery(request, location_number):
             context_instance=RequestContext(request)
         )
 
+@login_required
 def tokensCollected(request, location_number):
     location=Location.objects.get(location_number=location_number)
     tokens=TokenCollection.objects.filter(location=location).order_by('-timestamp')
@@ -464,6 +466,7 @@ def tokensCollected(request, location_number):
             context_instance=RequestContext(request)
     )
 
+@login_required
 def recordTokenCollection(request, location_number):
     location=Location.objects.get(location_number=location_number)
     form=TokenCollectionForm()
@@ -487,6 +490,7 @@ def recordTokenCollection(request, location_number):
             context_instance=RequestContext(request)
         )
 
+@login_required
 def addBoothTokenNote(request, location_number):
     location=TokenBooth.objects.get(location_number=location_number)
     basetemplate = "token-base.html"
@@ -507,6 +511,7 @@ def addBoothTokenNote(request, location_number):
             context_instance = RequestContext(request)
             )
 
+@login_required
 def addLocationTokenNote(request, location_number):
     location=Location.objects.get(location_number=location_number)
     basetemplate = "token-base.html"
@@ -526,6 +531,7 @@ def addLocationTokenNote(request, location_number):
             context_instance = RequestContext(request)
             )
 
+@login_required
 def locationTokenNote(request, location_number):
     location=Location.objects.get(location_number=location_number)
     notes=LocationTokenNote.objects.filter(location=location).order_by('-timestamp')
@@ -536,6 +542,7 @@ def locationTokenNote(request, location_number):
         context_instance = RequestContext(request)
     )
 
+@login_required
 def boothTokenNote(request, location_number):
     location=TokenBooth.objects.get(location_number=location_number)
     notes=BoothTokenNote.objects.filter(location=location).order_by('-timestamp')
