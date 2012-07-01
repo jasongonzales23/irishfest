@@ -23,7 +23,7 @@ from datetime import datetime, date, time
 from datetime import timedelta
 from django.contrib.auth.decorators import login_required
 import itertools
-
+from django.contrib.auth.decorators import permission_required
 
 @login_required
 def showLastInventory(request, location_number):
@@ -420,7 +420,7 @@ def csvDailyReport(request, year, month, day):
 
     return response
 
-@login_required
+@permission_required('inventory.add_token')
 def tokensDelivered(request, location_number):
     location=TokenBooth.objects.get(location_number=location_number)
     tokens=TokenDelivery.objects.filter(location=location).order_by('-timestamp')
@@ -430,7 +430,7 @@ def tokensDelivered(request, location_number):
             context_instance=RequestContext(request)
     )
 
-@login_required
+@permission_required('inventory.add_token')
 def recordTokenDelivery(request, location_number):
     location=TokenBooth.objects.get(location_number=location_number)
     locationtype = "booth"
@@ -456,7 +456,7 @@ def recordTokenDelivery(request, location_number):
             context_instance=RequestContext(request)
         )
 
-@login_required
+@permission_required('inventory.add_token')
 def tokensCollected(request, location_number):
     location=Location.objects.get(location_number=location_number)
     tokens=TokenCollection.objects.filter(location=location).order_by('-timestamp')
@@ -466,7 +466,7 @@ def tokensCollected(request, location_number):
             context_instance=RequestContext(request)
     )
 
-@login_required
+@permission_required('inventory.add_token')
 def recordTokenCollection(request, location_number):
     location=Location.objects.get(location_number=location_number)
     form=TokenCollectionForm()
@@ -490,7 +490,7 @@ def recordTokenCollection(request, location_number):
             context_instance=RequestContext(request)
         )
 
-@login_required
+@permission_required('inventory.add_token')
 def addBoothTokenNote(request, location_number):
     location=TokenBooth.objects.get(location_number=location_number)
     basetemplate = "token-base.html"
@@ -511,7 +511,7 @@ def addBoothTokenNote(request, location_number):
             context_instance = RequestContext(request)
             )
 
-@login_required
+@permission_required('inventory.add_token')
 def addLocationTokenNote(request, location_number):
     location=Location.objects.get(location_number=location_number)
     basetemplate = "token-base.html"
@@ -531,7 +531,7 @@ def addLocationTokenNote(request, location_number):
             context_instance = RequestContext(request)
             )
 
-@login_required
+@permission_required('inventory.add_token')
 def locationTokenNote(request, location_number):
     location=Location.objects.get(location_number=location_number)
     notes=LocationTokenNote.objects.filter(location=location).order_by('-timestamp')
@@ -542,7 +542,7 @@ def locationTokenNote(request, location_number):
         context_instance = RequestContext(request)
     )
 
-@login_required
+@permission_required('inventory.add_token')
 def boothTokenNote(request, location_number):
     location=TokenBooth.objects.get(location_number=location_number)
     notes=BoothTokenNote.objects.filter(location=location).order_by('-timestamp')
@@ -554,7 +554,7 @@ def boothTokenNote(request, location_number):
         context_instance = RequestContext(request)
     )
 
-    
+@permission_required('inventory.add_token')
 def collectionReport(request):
     locations = Location.objects.order_by('location_number')
     tokens = TokenCollection.objects.order_by('location', 'timestamp')
@@ -590,6 +590,7 @@ def collectionReport(request):
         context_instance = RequestContext(request)
     )
 
+@permission_required('inventory.add_token')
 def csvCollectionReport(request):
     response = HttpResponse(mimetype='text/csv')
     response['Content-Disposition'] = 'attachment;filename=token-collection-report.csv'
@@ -636,6 +637,7 @@ def csvCollectionReport(request):
     writer.writerow(grandtotal)
     return response
 
+@permission_required('inventory.add_token')
 def deliveryReport(request):
     locations = TokenBooth.objects.order_by('location_number')
     tokens = TokenDelivery.objects.order_by('location', 'timestamp')
@@ -671,6 +673,7 @@ def deliveryReport(request):
         context_instance = RequestContext(request)
     )
 
+@permission_required('inventory.add_token')
 def csvDeliveryReport(request):
     response = HttpResponse(mimetype='text/csv')
     response['Content-Disposition'] = 'attachment;filename=token-delivery-report.csv'
@@ -716,6 +719,7 @@ def csvDeliveryReport(request):
 
     return response
 
+@permission_required('inventory.add_token')
 def reconciliationReport(request):
     locations = Location.objects.order_by('location_number')
     tokens = TokenCollection.objects.order_by('location', 'timestamp')
@@ -782,6 +786,7 @@ def reconciliationReport(request):
         context_instance = RequestContext(request)
     )
 
+@permission_required('inventory.add_token')
 def csvReconciliationReport(request):
     response = HttpResponse(mimetype='text/csv')
     response['Content-Disposition'] = 'attachment;filename=token-reconciliation-report.csv'
