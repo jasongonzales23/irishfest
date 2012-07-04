@@ -420,7 +420,7 @@ def csvDailyReport(request, year, month, day):
 
     return response
 
-@permission_required('inventory.add_token')
+@permission_required('inventory.add_tokendelivery')
 def tokensDelivered(request, location_number):
     location=TokenBooth.objects.get(location_number=location_number)
     tokens=TokenDelivery.objects.filter(location=location).order_by('-timestamp')
@@ -430,7 +430,7 @@ def tokensDelivered(request, location_number):
             context_instance=RequestContext(request)
     )
 
-@permission_required('inventory.add_token')
+@permission_required('inventory.add_tokendelivery')
 def recordTokenDelivery(request, location_number):
     location=TokenBooth.objects.get(location_number=location_number)
     locationtype = "booth"
@@ -456,7 +456,7 @@ def recordTokenDelivery(request, location_number):
             context_instance=RequestContext(request)
         )
 
-@permission_required('inventory.add_token')
+@permission_required('inventory.add_tokencollection')
 def tokensCollected(request, location_number):
     location=Location.objects.get(location_number=location_number)
     tokens=TokenCollection.objects.filter(location=location).order_by('-timestamp')
@@ -466,7 +466,7 @@ def tokensCollected(request, location_number):
             context_instance=RequestContext(request)
     )
 
-@permission_required('inventory.add_token')
+@permission_required('inventory.add_tokencollection')
 def recordTokenCollection(request, location_number):
     location=Location.objects.get(location_number=location_number)
     form=TokenCollectionForm()
@@ -490,7 +490,7 @@ def recordTokenCollection(request, location_number):
             context_instance=RequestContext(request)
         )
 
-@permission_required('inventory.add_token')
+@permission_required('inventory.add_boothtokennote')
 def addBoothTokenNote(request, location_number):
     location=TokenBooth.objects.get(location_number=location_number)
     basetemplate = "token-base.html"
@@ -511,7 +511,7 @@ def addBoothTokenNote(request, location_number):
             context_instance = RequestContext(request)
             )
 
-@permission_required('inventory.add_token')
+@permission_required('inventory.add_locationtokennote')
 def addLocationTokenNote(request, location_number):
     location=Location.objects.get(location_number=location_number)
     basetemplate = "token-base.html"
@@ -531,7 +531,7 @@ def addLocationTokenNote(request, location_number):
             context_instance = RequestContext(request)
             )
 
-@permission_required('inventory.add_token')
+@permission_required('inventory.add_locationtokennote')
 def locationTokenNote(request, location_number):
     location=Location.objects.get(location_number=location_number)
     notes=LocationTokenNote.objects.filter(location=location).order_by('-timestamp')
@@ -542,7 +542,7 @@ def locationTokenNote(request, location_number):
         context_instance = RequestContext(request)
     )
 
-@permission_required('inventory.add_token')
+@permission_required('inventory.add_boothtokennote')
 def boothTokenNote(request, location_number):
     location=TokenBooth.objects.get(location_number=location_number)
     notes=BoothTokenNote.objects.filter(location=location).order_by('-timestamp')
