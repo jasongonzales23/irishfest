@@ -26,6 +26,27 @@ import itertools
 from django.contrib.auth.decorators import permission_required
 
 @login_required
+def showDashboardInventory (request):
+    return render_to_response('dashboard-inventory.html',
+            {},
+            context_instance=RequestContext(request)
+            )
+
+@login_required
+def showDashboardOrders (request):
+    return render_to_response('dashboard-orders.html',
+            {},
+            context_instance=RequestContext(request)
+            )
+
+@login_required
+def showDashboardNotes (request):
+    return render_to_response('dashboard-notes.html',
+            {},
+            context_instance=RequestContext(request)
+            )
+
+@login_required
 def showLastInventory(request, location_number):
     #change to get obj or 404
     try:

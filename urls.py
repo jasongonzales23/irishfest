@@ -14,7 +14,7 @@ from inventory.views import addLocationTokenNote, addBoothTokenNote
 from inventory.views import locationTokenNote, boothTokenNote, addBoothTokenNote, addLocationTokenNote
 from inventory.views import collectionReport, deliveryReport, reconciliationReport
 from inventory.views import csvCollectionReport,csvDeliveryReport, csvReconciliationReport
-
+from inventory.views import showDashboardInventory, showDashboardOrders, showDashboardNotes
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'irishfest.views.home', name='home'),
@@ -27,6 +27,11 @@ urlpatterns = patterns('',
     url(r'^admin_tools/', include('admin_tools.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('registration.backends.default.urls')),
+    #dashboard URLs
+    url(r'^dashboard/inventory', showDashboardInventory),
+    url(r'^dashboard/orders', showDashboardOrders),
+    url(r'^dashboard/notes', showDashboardNotes),
+    #regular old URLs
     url(r'^location/(?P<location_number>[^\.]+)$', showLastInventory),
     url(r'^update-inventory/(?P<location_number>[^\.]+)$', updateInventory),
     url(r'^order-history/(?P<location_number>[^\.]+)$', orderHistory),
