@@ -1,3 +1,31 @@
 {% extends 'dashboard-base.html' %}
 
-Hello there
+{% block base_content%}
+<table>
+  <thead>
+    <tr>
+      <th>Station</th>
+      <th>Last Inv. Person</th>
+      <th>Last Inv. Timestamp</th>
+      <th>Time Since Last Inv.</th>
+      <th>Station #</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for location in locations %}
+    <tr>
+      <td>{{ location.name }}</td>
+      {% for inv in location.inventory_set.all %}
+        {% if inv.timestamp == location.oldest_inventory %}
+        <td>{{ inv.user }}</td>
+        {% endif %}
+      {% endfor %}
+      <td>{{ location.oldest_inventory }}</td>
+      <td>{{ location.oldest_inventory|timesince }}</td>
+      <td>{{ location.location_number }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

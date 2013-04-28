@@ -27,13 +27,16 @@ from django.contrib.auth.decorators import permission_required
 
 @login_required
 def showDashboardInventory (request):
+    locations = Location.objects.annotate(oldest_inventory=Min('inventory__timestamp')).order_by('oldest_inventory')
+
     return render_to_response('dashboard-inventory.html',
-            {},
+            { 'locations': locations, 'now': now },
             context_instance=RequestContext(request)
             )
 
 @login_required
 def showDashboardOrders (request):
+    locations = Location.objects.annotate
     return render_to_response('dashboard-orders.html',
             {},
             context_instance=RequestContext(request)
@@ -41,8 +44,13 @@ def showDashboardOrders (request):
 
 @login_required
 def showDashboardNotes (request):
+    locations = Location.objects.annotate(oldest_note=Min('note__timestamp')).order_by('oldest_note')
+    
+    for location in locations:
+        print location.oldest_note
+
     return render_to_response('dashboard-notes.html',
-            {},
+            { 'locations': locations },
             context_instance=RequestContext(request)
             )
 
