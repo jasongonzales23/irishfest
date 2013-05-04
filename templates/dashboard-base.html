@@ -22,6 +22,7 @@
           <li class="inventory"><a href="/dashboard/inventory">Inventory</a></li>
           <li class="latest-orders" ><a href="/dashboard/orders">Orders</a></li>
           <li class="unfilled-orders"><a href="/dashboard/notes">Notes</a></li>
+          <li class="logout"><a href="/accounts/logout/">{{ user.first_name|first }}. {{ user.last_name}} | Logout</a></li>
 		    </ul>		
 		    {% block header %}
 		    {% endblock %}

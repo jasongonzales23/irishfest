@@ -22,7 +22,7 @@
         <li class="collection-report"><a href="/token/report/collection">Token Collection Report</a></li>
         <li class="delivery-report"><a href="/token/report/delivery">Token Delivery Report</a></li>
         <li class="reconciliation-report"><a href="/token/report/reconciliation">Reconciliation Report</a></li>
-        <li class="logout"><a href="/accounts/logout/">Logout</a></li>
+        <li class="logout"><a href="/accounts/logout/">{{ user.first_name|first }}. {{ user.last_name}} | Logout</a></li>
       </ul>		
 		    {% block header %}
 		    {% endblock %}

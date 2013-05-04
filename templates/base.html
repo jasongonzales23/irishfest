@@ -24,7 +24,7 @@
 			<li class="inventory-history" ><a href="/inventory-history/{{location.location_number}}">Inventory History</a></li>
 			<li class="starting-inventory"><a href="/starting-inventory/{{location.location_number}}">Starting Inventory</a></li>
 			<li class="notes"><a href="/notes/{{location.location_number}}">Notes</a></li>
-			<li class="logout"><a href="/accounts/logout/">Logout</a></li>
+      <li class="logout"><a href="/accounts/logout/">{{ user.first_name|first }}. {{ user.last_name}} | Logout</a></li>
 		    </ul>		
 		    {% block header %}
 		    {% endblock %}

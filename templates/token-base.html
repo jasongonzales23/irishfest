@@ -26,7 +26,7 @@
         <li class="tokens-delivered"><a href="/token/location/{{location.location_number}}">Tokens Collected</a></li>
         <li class="location-notes"><a href="/token/note/location/{{location.location_number}}">Notes</a></li>
       {% endif %}
-        <li class="logout"><a href="/accounts/logout/">Logout</a></li>
+      <li class="logout"><a href="/accounts/logout/">{{ user.first_name|first }}. {{ user.last_name}} | Logout</a></li>
       </ul>		
 		    {% block header %}
 		    {% endblock %}
