@@ -5,7 +5,7 @@
   <thead>
     <tr>
       <th>Station</th>
-      <th>Last Note Person</th>
+      <th># of Notes</th>
       <th>Last Note Timestamp</th>
       <th>Time Since Last Note</th>
       <th>Station #</th>
@@ -15,14 +15,10 @@
   {% for location in locations %}
     <tr>
       <td>{{ location.name }}</td>
-      {% for note in location.note_set.all %}
-        {% if note.timestamp == location.oldest_note %}
-        <td>{{ note.user }}</td>
-        {% endif %}
-      {% endfor %}
-      <td>{{ location.oldest_note}}</td>
-      <td>{{ location.oldest_note|timesince }}</td>
-      <td>{{ location.location_number }}</td>
+      <td>{{ location.note_count }}</td>
+      <td>{{ location.oldest_note|default_if_none:"--"}}</td>
+      <td>{% if location.oldest_note %}{{ location.oldest_note|timesince}}{% else %}--{% endif %}</td>
+      <td>{{ location.location_number|default:"--" }}</td>
     </tr>
     {% endfor %}
   </tbody>

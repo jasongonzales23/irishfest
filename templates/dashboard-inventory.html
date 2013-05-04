@@ -13,17 +13,19 @@
   </thead>
   <tbody>
   {% for location in locations %}
+    {% if location.inventory_set.all %}
     <tr>
       <td>{{ location.name }}</td>
       {% for inv in location.inventory_set.all %}
         {% if inv.timestamp == location.oldest_inventory %}
-        <td>{{ inv.user }}</td>
+        <td>{{ inv.user|default:"--" }}</td>
         {% endif %}
       {% endfor %}
-      <td>{{ location.oldest_inventory }}</td>
+      <td>{{ location.oldest_inventory|default:"--" }}</td>
       <td>{{ location.oldest_inventory|timesince }}</td>
-      <td>{{ location.location_number }}</td>
+      <td>{{ location.location_number|default:"--" }}</td>
     </tr>
+    {% endif %}
     {% endfor %}
   </tbody>
 </table>

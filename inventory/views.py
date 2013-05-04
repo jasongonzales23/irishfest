@@ -30,21 +30,32 @@ def showDashboardInventory (request):
     locations = Location.objects.annotate(oldest_inventory=Min('inventory__timestamp')).order_by('oldest_inventory')
 
     return render_to_response('dashboard-inventory.html',
-            { 'locations': locations, 'now': now },
+            { 'locations': locations },
             context_instance=RequestContext(request)
             )
 
 @login_required
 def showDashboardOrders (request):
-    locations = Location.objects.annotate
+    #locations = Location.objects.annotate(oldest_order=Min('order__timestamp'), undelivered_orders=Count('order__order_delivered', distinct = True))
+    #locations = Location.objects.annotate(last_order=Max('order__timestamp'))
+    #locations_false = Location.objects.filter(order__order_delivered = False).order_by('order__timestamp')
+    #locations = locations_false.annotate(last_order=Max('order__timestamp'), undelivered_orders=Count('order__order_delivered'))
+    #locations = Location.objects.values('order__order_delivered').annotate(undelivered=Count('order_order_delivered')
+
+    #locations = Location.objects.latest()
+    count = Location.objects.filter(order__order_delivered=False).annotate(undelivered=Count('order__order_delivered'))
+    locations = count.annotate(latest_order=Min('order__timestamp')).order_by('latest_order')
+    #for location in locations:
+     #   print "%s, %s" % (location.latest_order, location.undelivered)
+
     return render_to_response('dashboard-orders.html',
-            {},
+            { 'locations': locations },
             context_instance=RequestContext(request)
             )
 
 @login_required
 def showDashboardNotes (request):
-    locations = Location.objects.annotate(oldest_note=Min('note__timestamp')).order_by('oldest_note')
+    locations = Location.objects.annotate(oldest_note=Min('note__timestamp'), note_count=Count('note')).order_by('oldest_note')
     
     for location in locations:
         print location.oldest_note

@@ -1,3 +1,27 @@
 {% extends 'dashboard-base.html' %}
 
-Hello there
+{% block base_content%}
+<table>
+  <thead>
+    <tr>
+      <th>Station</th>
+      <th>Unfilled Orders</th>
+      <th>Last Order Timestamp</th>
+      <th>Time Since Last Order</th>
+      <th>Station #<th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for location in locations %}
+    <tr>
+      <td>{{ location.name|default:"--" }}</td>
+      <td>{{ location.undelivered|default:"--" }}</td>
+      <td>{{ location.latest_order|default:"--"}}</td>
+      <td>{{ location.latest_order|timesince }}</td>
+      <td>{{ location.location_number|default:"--" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
