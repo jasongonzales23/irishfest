@@ -56,9 +56,6 @@ def showDashboardOrders (request):
 @login_required
 def showDashboardNotes (request):
     locations = Location.objects.annotate(oldest_note=Min('note__timestamp'), note_count=Count('note')).order_by('oldest_note')
-    
-    for location in locations:
-        print location.oldest_note
 
     return render_to_response('dashboard-notes.html',
             { 'locations': locations },
@@ -125,7 +122,7 @@ def recordOrder(request, location_number):
     if request.method=='POST':
         formset=OrderFormSet(request.POST)
         group = OrderGroup.objects.create()
-        print group
+        #print group
         if formset.is_valid():
             for form in formset:
                 beverage=form.save(commit=False)
@@ -347,7 +344,7 @@ def latestInventories(request):
                 reporter.append((new.user))
                 for standard in standards:
                     if standard.beverage == new.beverage and standard.location == location:
-                        print standard.beverage
+                        #print standard.beverage
                         row.append((new.beverage, new.units_reported, standard.order_when_below, standard.fill_to_standard))
 
 

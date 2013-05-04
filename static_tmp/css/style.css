@@ -510,6 +510,28 @@ form {
   background: #262d30;
   border-radius: 6px;
   border: 1px solid #222;
+  width: 50%;
+}
+
+.form li .button {
+  border-radius: 6px;
+  display: inline-block;
+  width: 20%;
+  background: #262d30;
+  color: #fff;
+  margin-top: 1px;
+  text-align: center;
+  line-height: 32px;
+}
+
+.form li .dec.button {
+  float: left;
+  margin-right: 5%;
+}
+
+.form li .inc.button {
+  float: right;
+  margin-left: 5%;
 }
 
 .form li:nth-child(even) {
@@ -531,6 +553,7 @@ form {
 .form .errorlist li {
   border: none;
 }
+
 
 .column {
   width: 450px;

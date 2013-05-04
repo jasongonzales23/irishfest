@@ -109,3 +109,23 @@ if(errorlist >0 ){
     $('.errorHeading').fadeIn();
 }
 
+$('.number').parent('li').prepend('<div class="dec button">-</div>');
+$('.number').parent('li').append('<div class="inc button">+</div>');
+
+$(".button").on("click", function() {
+
+    var $button = $(this);
+      var oldValue = $button.parent().find(".number").val();
+        if ($button.text() == "+") {
+            var newVal = oldValue == '' ? 1 : parseFloat(oldValue) + 1;
+        } else {
+           // Don't allow decrementing below zero
+             if (oldValue > 0) {
+               var newVal = parseFloat(oldValue) - 1;
+             } else {
+               newVal = 0;
+             }
+           }
+
+           $button.parent().find(".number").val(newVal);
+});
