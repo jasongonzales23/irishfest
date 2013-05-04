@@ -16,6 +16,7 @@
 	</thead>
 	
 	{% for o in order %}
+  {% if o.units_ordered > 0 %}
 	{% ifchanged %}
   <tr class="datetime">
     <td colspan="4"><b>Reported At:</b> {{o.timestamp|date:"fA l F j, Y" }}</td>
@@ -37,6 +38,7 @@
       <td>{{ o.order_delivered }}</td>
       {% endif %}
 	</tr>
+  {% endif %}
 	{% endfor %}
     </table>
 </div>
