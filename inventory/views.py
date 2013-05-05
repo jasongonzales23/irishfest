@@ -27,7 +27,7 @@ from django.contrib.auth.decorators import permission_required
 
 @login_required
 def showDashboardInventory (request):
-    locations = Location.objects.annotate(oldest_inventory=Min('inventory__timestamp')).order_by('oldest_inventory')
+    locations = Location.objects.annotate(oldest_inventory=Max('inventory__timestamp')).order_by('-oldest_inventory')
 
     return render_to_response('dashboard-inventory.html',
             { 'locations': locations },
@@ -42,9 +42,8 @@ def showDashboardOrders (request):
     #locations = locations_false.annotate(last_order=Max('order__timestamp'), undelivered_orders=Count('order__order_delivered'))
     #locations = Location.objects.values('order__order_delivered').annotate(undelivered=Count('order_order_delivered')
 
-    #locations = Location.objects.latest()
     count = Location.objects.filter(order__order_delivered=False).annotate(undelivered=Count('order__order_delivered'))
-    locations = count.annotate(latest_order=Min('order__timestamp')).order_by('latest_order')
+    locations = count.annotate(latest_order=Max('order__timestamp')).order_by('-latest_order')
     #for location in locations:
      #   print "%s, %s" % (location.latest_order, location.undelivered)
 
@@ -55,7 +54,7 @@ def showDashboardOrders (request):
 
 @login_required
 def showDashboardNotes (request):
-    locations = Location.objects.annotate(oldest_note=Min('note__timestamp'), note_count=Count('note')).order_by('oldest_note')
+    locations = Location.objects.annotate(oldest_note=Max('note__timestamp'), note_count=Count('note')).order_by('-oldest_note')
 
     return render_to_response('dashboard-notes.html',
             { 'locations': locations },
