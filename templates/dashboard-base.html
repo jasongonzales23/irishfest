@@ -16,7 +16,7 @@
   </head>
   <body class="{% block body_class %}{% endblock %}" id="{% block body_id %} {% endblock %}">
 	<div id="container">
-	    <header>
+    <header>
 		<div class="row">
 		    <ul id="nav">
           <li class="inventory"><a href="/dashboard/inventory">Inventory</a></li>
@@ -24,20 +24,22 @@
           <li class="unfilled-orders"><a href="/dashboard/notes">Notes</a></li>
           <li class="logout"><a href="/accounts/logout/">{{ user.first_name|first }}. {{ user.last_name}} | Logout</a></li>
 		    </ul>		
-		    {% block header %}
-		    {% endblock %}
 		</div>
-	    </header>
-	    <div id="main" role="main">
-		<div class="row">
-		{% block base_content%}Base{% endblock %}
-		</div>
-	    </div>
-	    <footer>
-		{% block footer %}
-		{% endblock %}
-	    </footer>
-	</div> <!-- end of #container -->
+    </header>
+    <div id="main" role="main">
+      <div class="row">
+        {% block header %}
+        <h1>Dashboard</h1>
+        <h3>This report run on {% now "D,  P" %}</h3>
+        {% endblock %}
+        {% block base_content%}Base{% endblock %}
+        </div>
+        </div>
+        <footer>
+      {% block footer %}
+      {% endblock %}
+        </footer>
+    </div> <!-- end of #container -->
 	<div id="blanket"></div>
 	<div id="modalOuter">
 	    {% block modal_content%}
