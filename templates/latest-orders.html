@@ -24,6 +24,7 @@
   </thead>
   <tbody>
     {% for thing in beverage %}
+    {% if thing.1 > 0 %}
     <tr>
       <td>
         {{ thing.0 }}
@@ -35,6 +36,7 @@
         {{ thing.2 }}
       </td>
   </tr>
+    {% endif %}
     {% endfor %}
   </tbody>
 </table>
