@@ -129,3 +129,6 @@ $(".button").on("click", function() {
 
            $button.parent().find(".number").val(newVal);
 });
+
+$('.ice').clone().removeClass('original').addClass('copy').appendTo('table');
+$('.original').remove();
