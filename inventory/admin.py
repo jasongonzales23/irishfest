@@ -54,7 +54,7 @@ class TokenDeliveryAdmin(admin.ModelAdmin):
     list_display = ('location','tokens','timestamp', 'user')
 
 class TokenCollectionAdmin(admin.ModelAdmin):
-    list_display = ('location','tokens', 'timestamp', 'user')
+    list_display = ('location','tokens', 'timestamp', 'fiscal_day', 'user')
 
 
 

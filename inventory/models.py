@@ -117,6 +117,7 @@ class TokenDelivery(models.Model):
     timestamp=models.DateTimeField(auto_now=True)
     user=models.ForeignKey(User)
 
+
 class TokenDeliveryForm(ModelForm):
     tokens=forms.IntegerField(initial=0, widget=Html5NumInput)
     class Meta:
@@ -127,6 +128,7 @@ class TokenCollection(models.Model):
     location=models.ForeignKey(Location)
     tokens=models.IntegerField(default=0)
     timestamp=models.DateTimeField(auto_now=True)
+    fiscal_day=models.DateField(default=datetime.now)
     user=models.ForeignKey(User)
 
 class TokenCollectionForm(ModelForm):

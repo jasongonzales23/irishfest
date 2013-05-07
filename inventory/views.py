@@ -25,6 +25,20 @@ from django.contrib.auth.decorators import login_required
 import itertools
 from django.contrib.auth.decorators import permission_required
 
+def assignFiscalDay(time):
+    """
+    if hour is less than or equal to 3, assign fiscal day to the day before
+    """
+    year = time.year
+    month = time.month
+    day = time.day
+    hour = time.hour
+    if time.hour <= 3:
+        fiscalDay = datetime(year, month, day -1)
+    else:
+        fiscalDay = datetime(year, month, day)
+    return fiscalDay
+
 @login_required
 def showDashboardInventory (request):
     locations = Location.objects.annotate(oldest_inventory=Max('inventory__timestamp')).order_by('-oldest_inventory')
@@ -511,7 +525,8 @@ def recordTokenCollection(request, location_number):
         if form.is_valid():
             tokencollection=form.save(commit=False)
             tokens=form.cleaned_data['tokens']
-            TokenCollection(location=location,tokens=tokens,user=request.user).save()
+            fiscal_day = assignFiscalDay(datetime.now())
+            TokenCollection(location=location,tokens=tokens,user=request.user, fiscal_day=fiscal_day).save()
 
             return HttpResponseRedirect('/token/location/' + location_number )
         else:
