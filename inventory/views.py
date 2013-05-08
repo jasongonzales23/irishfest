@@ -491,7 +491,8 @@ def recordTokenDelivery(request, location_number):
         if form.is_valid():
             tokendelivery=form.save(commit=False)
             tokens=form.cleaned_data['tokens']
-            TokenDelivery(location=location,tokens=tokens,user=request.user).save()
+            fiscal_day = assignFiscalDay(datetime.now())
+            TokenDelivery(location=location,tokens=tokens,user=request.user, fiscal_day=fiscal_day).save()
 
             return HttpResponseRedirect('/token/booth/' + location_number )
         else:
@@ -608,8 +609,8 @@ def boothTokenNote(request, location_number):
 @permission_required('inventory.add_token')
 def collectionReport(request):
     locations = Location.objects.order_by('location_number')
-    tokens = TokenCollection.objects.order_by('location', 'timestamp')
-    dates = TokenCollection.objects.dates('timestamp','day');
+    tokens = TokenCollection.objects.order_by('location', 'fiscal_day')
+    dates = TokenCollection.objects.dates('fiscal_day','day');
 
     grid = []
     for location in locations:
@@ -619,7 +620,7 @@ def collectionReport(request):
         for date in dates:
             daytotal = 0
             for token in tokens:
-                if token.location == location and token.timestamp.date() == date.date():
+                if token.location == location and token.fiscal_day == date.date():
                     daytotal += token.tokens
                     rowtotal += token.tokens
             row.append(daytotal)
@@ -691,8 +692,8 @@ def csvCollectionReport(request):
 @permission_required('inventory.add_token')
 def deliveryReport(request):
     locations = TokenBooth.objects.order_by('location_number')
-    tokens = TokenDelivery.objects.order_by('location', 'timestamp')
-    dates = TokenDelivery.objects.dates('timestamp','day');
+    tokens = TokenDelivery.objects.order_by('location', 'fiscal_day')
+    dates = TokenDelivery.objects.dates('fiscal_day','day');
 
     grid = []
     for location in locations:
@@ -702,7 +703,7 @@ def deliveryReport(request):
         for date in dates:
             daytotal = 0
             for token in tokens:
-                if token.location == location and token.timestamp.date() == date.date():
+                if token.location == location and token.fiscal_day == date.date():
                     daytotal += token.tokens
                     rowtotal += token.tokens
             row.append(daytotal)
@@ -773,8 +774,8 @@ def csvDeliveryReport(request):
 @permission_required('inventory.add_token')
 def reconciliationReport(request):
     locations = Location.objects.order_by('location_number')
-    tokens = TokenCollection.objects.order_by('location', 'timestamp')
-    dates = TokenCollection.objects.dates('timestamp','day');
+    tokens = TokenCollection.objects.order_by('location', 'fiscal_day')
+    dates = TokenCollection.objects.dates('fiscal_day','day');
     orders = Order.objects.order_by('location__location_number')
     tokenval = 2
     grid = []
@@ -786,11 +787,10 @@ def reconciliationReport(request):
         for date in dates:
             daytotal = 0
             for token in tokens:
-                if token.location == location and token.timestamp.date() == date.date():
+                if token.location == location and token.fiscal_day == date.date():
                     daytotal += token.tokens
                     rowtotal += token.tokens
             daytotals.append(daytotal)
-        #row.append(daytotals)
         row.append(rowtotal)
         
         totalinv = 0

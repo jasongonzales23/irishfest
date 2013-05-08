@@ -51,15 +51,10 @@ class TokenBoothAdmin(admin.ModelAdmin):
     list_display = ('name', 'location_number',)
 
 class TokenDeliveryAdmin(admin.ModelAdmin):
-    list_display = ('location','tokens','timestamp', 'user')
+    list_display = ('location','tokens','timestamp','fiscal_day', 'user')
 
 class TokenCollectionAdmin(admin.ModelAdmin):
     list_display = ('location','tokens', 'timestamp', 'fiscal_day', 'user')
-
-
-
-#class OrderAdmin(admin.ModelAdmin):
-    #list_display = ('location', 
 
 admin.site.register(Location, LocationAdmin)
 admin.site.register(Beverage, BeverageAdmin)

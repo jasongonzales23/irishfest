@@ -115,6 +115,7 @@ class TokenDelivery(models.Model):
     location=models.ForeignKey(TokenBooth)
     tokens=models.IntegerField(default=0)
     timestamp=models.DateTimeField(auto_now=True)
+    fiscal_day=models.DateField(default=datetime.now)
     user=models.ForeignKey(User)
 
 
