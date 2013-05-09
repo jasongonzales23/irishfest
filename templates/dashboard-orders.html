@@ -1,24 +1,24 @@
 {% extends 'dashboard-base.html' %}
 
 {% block base_content%}
-<table>
+<table class="dashboard">
   <thead>
     <tr>
       <th>Location</th>
       <th>Unfilled Orders</th>
-      <th>Last Order Timestamp</th>
-      <th>Time Since Last Order</th>
+      <th>Oldest Unfilled Order Time</th>
+      <th>Time Since Oldest Unfilled Order</th>
       <th>Location #<th>
     </tr>
   </thead>
   <tbody>
   {% for location in locations %}
     <tr>
-      <td>{{ location.name|default:"--" }}</td>
-      <td>{{ location.undelivered|default:"--" }}</td>
-      <td>{{ location.latest_order|default:"--"}}</td>
-      <td>{{ location.latest_order|timesince }}</td>
-      <td>{{ location.location_number|default:"--" }}</td>
+      <td><a href="/location/{{ location.location_number }}">{{ location.name|default:"--" }}</a></td>
+      <td><a href="/location/{{ location.location_number }}">{{ location.undelivered|default:"--" }}</a></td>
+      <td><a href="/location/{{ location.location_number }}">{{ location.latest_order|default:"--"}}</a></td>
+      <td><a href="/location/{{ location.location_number }}">{{ location.latest_order|timesince }}</a></td>
+      <td><a href="/location/{{ location.location_number }}">{{ location.location_number|default:"--" }}</a></td>
     </tr>
     {% endfor %}
   </tbody>

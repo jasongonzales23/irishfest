@@ -1,7 +1,7 @@
 {% extends 'dashboard-base.html' %}
 
 {% block base_content%}
-<table>
+<table class="dashboard">
   <thead>
     <tr>
       <th>Location</th>
@@ -14,11 +14,11 @@
   <tbody>
   {% for location in locations %}
     <tr>
-      <td>{{ location.name }}</td>
-      <td>{{ location.note_count }}</td>
-      <td>{{ location.oldest_note|default_if_none:"--"}}</td>
-      <td>{% if location.oldest_note %}{{ location.oldest_note|timesince}}{% else %}--{% endif %}</td>
-      <td>{{ location.location_number|default:"--" }}</td>
+      <td><a href="/location/{{ location.location_number }}">{{ location.name }}</a></td>
+      <td><a href="/location/{{ location.location_number }}">{{ location.note_count }}</a></td>
+      <td><a href="/location/{{ location.location_number }}">{{ location.oldest_note|default_if_none:"--"}}</a></td>
+      <td><a href="/location/{{ location.location_number }}">{% if location.oldest_note %}{{ location.oldest_note|timesince}}{% else %}--{% endif %}</a></td>
+      <td><a href="/location/{{ location.location_number }}">{{ location.location_number|default:"--" }}</a></td>
     </tr>
     {% endfor %}
   </tbody>

@@ -421,6 +421,16 @@ td, th {
   padding: 15px 5px;
 }
 
+.dashboard td {
+  padding: 0;
+}
+
+.dashboard td a {
+  text-decoration: none;
+  padding: 15px 5px;
+  display: block;
+}
+
 .deliver {
   position: relative;
   background: #2F383C;
