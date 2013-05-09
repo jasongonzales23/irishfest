@@ -23,7 +23,7 @@
     <td colspan="4"><b>Reported By:</b> {{i.user.first_name}} {{i.user.last_name}}</td>
   </tr>
 	{% endifchanged %}
-	<tr>
+  <tr data-group="{{ i.group }}"{% if i.beverage.name == 'Ice' %} class="ice"{% endif %}>
 	    <td>{{ i.beverage }}</td>
 	    <td>{{ i.units_reported }}</td>
 	</tr>

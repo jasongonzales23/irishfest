@@ -25,8 +25,8 @@
     <td colspan="4"><b>Reported By:</b> {{ o.user.first_name}} {{ o.user.last_name}}</td>
   </tr>
 	{% endifchanged %}
-  <tr>
-	    <td>{{ o.beverage.name }}</td>
+  <tr data-group="{{ o.group }}" {% if o.beverage.name == 'Ice' %} class="ice"{% endif %}>
+    <td >{{ o.beverage.name }}</td>
       <td>{{ o.units_ordered }}</td>
       {% if perms.inventory.add_order %}
       {% if o.order_delivered == False %}

@@ -26,7 +26,7 @@
   </tr>
   {% endifchanged %}
   {% endif %}
-  <tr class="{% if i.beverage.name == 'Ice' %}ice original{% endif %}">
+  <tr data-group="{{ i.group }}"{% if i.beverage.name == 'Ice' %} class="ice"{% endif %}>
 	    <td>{{ i.beverage.name }}</td>
       {% for ls in i.beverage.locationstandard_set.all %}
         {% if ls.location == location %}

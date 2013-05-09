@@ -130,5 +130,22 @@ $(".button").on("click", function() {
            $button.parent().find(".number").val(newVal);
 });
 
-$('.ice').clone().removeClass('original').addClass('copy').appendTo('table');
-$('.original').remove();
+var ice = $('.ice');
+ice.each( function(index){
+  var $this = $(this);
+  var data = $this.data();
+  var siblings = $this.siblings();
+  var $last;
+  siblings.each(function(index){
+    var sibData = $(this).data();
+    if (sibData.group === data.group){
+      $last = $(this);
+    }
+  });
+  $last.after($this);
+});
+
+var formIce = $('input[value="Ice"]').parent();
+var formIceRow = formIce.add(formIce.next());
+var lastRow = $('.form').find('li').last();
+lastRow.after(formIceRow);

@@ -13,7 +13,7 @@
         </tr>
     </thead>
     {% for i in inventory %}
-    <tr>
+    <tr data-group="{{ i.group }}"{% if i.beverage.name == 'Ice' %} class="ice"{% endif %}>
         <td>{{ i.beverage.name }}</td>
         <td>{{ i.start_units }}</td>
     </tr>
