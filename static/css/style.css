@@ -369,6 +369,7 @@ header .login a, header .login a:visited {
   .table-wrap {
     height: 440px;
     overflow: scroll;
+    -webkit-overflow-scrolling: touch;
   }
 }
 @media all and (orientation: portrait) {

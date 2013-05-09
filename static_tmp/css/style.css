@@ -429,6 +429,7 @@ td, th {
   text-decoration: none;
   padding: 15px 5px;
   display: block;
+  color: #fff;
 }
 
 .deliver {
@@ -727,7 +728,7 @@ a.buttonish:hover, a.buttonish:visited, .cancelButtonish {
 
 .js .terms {
   text-decoration: underline;
-  color: blue;
+  color: #fff;
 }
 
 #blanket {
