@@ -142,10 +142,12 @@ ice.each( function(index){
       $last = $(this);
     }
   });
-  $last.after($this);
+  $last && $last.after($this);
 });
 
 var formIce = $('input[value="Ice"]').parent();
 var formIceRow = formIce.add(formIce.next());
 var lastRow = $('.form').find('li').last();
 lastRow.after(formIceRow);
+
+$('.table-wrap').jScrollPane();

@@ -11,6 +11,7 @@
     <meta name="description" content="{% block meta_description %}{% endblock %}" />
     <meta name="author" content="{% block meta_author %}{% endblock %}" />
     <meta name="viewport" content="width=device-width,initial-scale=1 maximum-scale=1, user-scalable=0">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery.jscrollpane.css" />
     <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css?v=2" />
     <script src="{{ STATIC_URL }}js/libs/modernizr-2.5.3.min.js"></script>
   </head>
@@ -51,7 +52,7 @@
       
 	<!-- scripts concatenated and minified via ant build script-->
 	<script defer src="{{ STATIC_URL }}js/plugins.js"></script>
-	<script defer src="{{ STATIC_URL }}js/script.js"></script>
+	<script defer src="{{ STATIC_URL }}js/script-min.js"></script>
 	<!-- end scripts-->
       
       
