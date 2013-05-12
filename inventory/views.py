@@ -41,7 +41,7 @@ def assignFiscalDay(time):
 
 @login_required
 def showDashboardInventory (request):
-    locations = Location.objects.annotate(oldest_inventory=Max('inventory__timestamp')).order_by('-oldest_inventory')
+    locations = Location.objects.annotate(oldest_inventory=Max('inventory__timestamp')).order_by('oldest_inventory')
 
     return render_to_response('dashboard-inventory.html',
             { 'locations': locations },
@@ -57,7 +57,7 @@ def showDashboardOrders (request):
     #locations = Location.objects.values('order__order_delivered').annotate(undelivered=Count('order_order_delivered')
 
     count = Location.objects.filter(order__order_delivered=False).annotate(undelivered=Count('order__order_delivered'))
-    locations = count.annotate(latest_order=Max('order__timestamp')).order_by('-latest_order')
+    locations = count.annotate(latest_order=Min('order__timestamp')).order_by('latest_order')
     #for location in locations:
      #   print "%s, %s" % (location.latest_order, location.undelivered)
 
