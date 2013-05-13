@@ -14,11 +14,11 @@
   <tbody>
   {% for location in locations %}
     <tr>
-      <td><a href="/location/{{ location.location_number }}">{{ location.name }}</a></td>
-      <td><a href="/location/{{ location.location_number }}">{{ location.note_count }}</a></td>
-      <td><a href="/location/{{ location.location_number }}">{{ location.oldest_note|default_if_none:"--"}}</a></td>
-      <td><a href="/location/{{ location.location_number }}">{% if location.oldest_note %}{{ location.oldest_note|timesince}}{% else %}--{% endif %}</a></td>
-      <td><a href="/location/{{ location.location_number }}">{{ location.location_number|default:"--" }}</a></td>
+      <td><a href="/notes/{{ location.location_number }}">{{ location.name }}</a></td>
+      <td><a href="/notes/{{ location.location_number }}">{{ location.note_count }}</a></td>
+      <td><a href="/notes/{{ location.location_number }}">{{ location.oldest_note|default_if_none:"--"}}</a></td>
+      <td><a href="/notes/{{ location.location_number }}">{% if location.oldest_note %}{{ location.oldest_note|timesince}}{% else %}--{% endif %}</a></td>
+      <td><a href="/notes/{{ location.location_number }}">{{ location.location_number|default:"--" }}</a></td>
     </tr>
     {% endfor %}
   </tbody>
