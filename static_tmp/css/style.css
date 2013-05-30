@@ -396,6 +396,10 @@ tr {
   border-bottom: 1px dotted #6D6D6D;
 }
 
+tr.warning {
+  background: #F00;
+}
+
 tr.datetime, tr.reporter {
   border: none;
 }

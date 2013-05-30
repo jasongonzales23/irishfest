@@ -12,8 +12,8 @@
     </tr>
   </thead>
   <tbody>
-  {% for location in locations %}
-    <tr>
+  {% for location, flag in locations %}
+  <tr {% if flag %}class="warning"{% endif %}>
       <td><a href="/order-history/{{ location.location_number }}">{{ location.name|default:"--" }}</a></td>
       <td><a href="/order-history/{{ location.location_number }}">{{ location.undelivered|default:"--" }}</a></td>
       <td><a href="/order-history/{{ location.location_number }}">{{ location.latest_order|default:"--"}}</a></td>

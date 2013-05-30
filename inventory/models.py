@@ -9,6 +9,12 @@ from django.contrib.auth.models import User
 class Html5NumInput(Input):
     input_type = 'number'
 
+class OrderAgeWarningTime(models.Model):
+    time = models.IntegerField(default=45)
+
+class InventoryAgeWarningTime(models.Model):
+    time = models.IntegerField(default=45)
+
 class Beverage(models.Model):
     name=models.CharField(max_length=255)
     tokenvalue=models.IntegerField(default=0)

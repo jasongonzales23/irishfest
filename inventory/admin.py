@@ -3,6 +3,7 @@ from datetime import datetime
 from inventory.models import Beverage,Location, LocationStandard, Inventory, Order, Note, InventoryGroup
 from inventory.models import Token, TokenBooth, TokenDelivery, TokenCollection
 from inventory.models import BoothTokenNote, LocationTokenNote
+from inventory.models import OrderAgeWarningTime, InventoryAgeWarningTime
 
 class InventoryGroupAdmin(admin.ModelAdmin):
     model=InventoryGroup
@@ -56,6 +57,12 @@ class TokenDeliveryAdmin(admin.ModelAdmin):
 class TokenCollectionAdmin(admin.ModelAdmin):
     list_display = ('location','tokens', 'timestamp', 'fiscal_day', 'user')
 
+class OrderAgeWarningTimeAdmin(admin.ModelAdmin):
+    list_display = ('time',)
+
+class InventoryAgeWarningTimeAdmin(admin.ModelAdmin):
+    list_display = ('time',)
+
 admin.site.register(Location, LocationAdmin)
 admin.site.register(Beverage, BeverageAdmin)
 admin.site.register(LocationStandard, LocationStandardAdmin)
@@ -67,3 +74,5 @@ admin.site.register(Token, TokenAdmin)
 admin.site.register(TokenBooth, TokenBoothAdmin)
 admin.site.register(TokenDelivery, TokenDeliveryAdmin)
 admin.site.register(TokenCollection, TokenCollectionAdmin)
+admin.site.register(OrderAgeWarningTime, OrderAgeWarningTimeAdmin)
+admin.site.register(InventoryAgeWarningTime, InventoryAgeWarningTimeAdmin)

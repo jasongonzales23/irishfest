@@ -2,7 +2,7 @@ from __future__ import division
 from django.conf.urls.defaults import *
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template.context import RequestContext
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from inventory.models import Beverage, Location, Inventory, Note, Order, InventoryForm, OrderForm, NoteForm
@@ -10,6 +10,7 @@ from inventory.models import LocationStandard, InventoryGroup,OrderGroup
 from inventory.models import Token, TokenBooth, TokenDelivery, TokenCollection
 from inventory.models import TokenDeliveryForm,TokenCollectionForm
 from inventory.models import LocationTokenNote, LocationTokenNoteForm, BoothTokenNote,BoothTokenNoteForm
+from inventory.models import OrderAgeWarningTime, InventoryAgeWarningTime
 
 from django.template.defaultfilters import slugify
 from django.core.exceptions import ObjectDoesNotExist
@@ -42,29 +43,33 @@ def assignFiscalDay(time):
 @login_required
 def showDashboardInventory (request):
     locations = Location.objects.annotate(oldest_inventory=Max('inventory__timestamp')).order_by('oldest_inventory')
-
-    return render_to_response('dashboard-inventory.html',
-            { 'locations': locations },
-            context_instance=RequestContext(request)
-            )
+    q = InventoryAgeWarningTime.objects.all()
+    warningtime = q[0].time
+    ctx= {}
+    ctx['locations'] = []
+    for location in locations:
+        oldest = location.oldest_inventory
+        end = datetime.now()
+        flag = end - oldest > timedelta(minutes=warningtime)
+        ctx['locations'].append((location, flag))
+    return render(request, 'dashboard-inventory.html', ctx)
 
 @login_required
 def showDashboardOrders (request):
-    #locations = Location.objects.annotate(oldest_order=Min('order__timestamp'), undelivered_orders=Count('order__order_delivered', distinct = True))
-    #locations = Location.objects.annotate(last_order=Max('order__timestamp'))
-    #locations_false = Location.objects.filter(order__order_delivered = False).order_by('order__timestamp')
-    #locations = locations_false.annotate(last_order=Max('order__timestamp'), undelivered_orders=Count('order__order_delivered'))
-    #locations = Location.objects.values('order__order_delivered').annotate(undelivered=Count('order_order_delivered')
-
     count = Location.objects.filter(order__order_delivered=False).annotate(undelivered=Count('order__order_delivered'))
     locations = count.annotate(latest_order=Min('order__timestamp')).order_by('latest_order')
-    #for location in locations:
-     #   print "%s, %s" % (location.latest_order, location.undelivered)
 
-    return render_to_response('dashboard-orders.html',
-            { 'locations': locations },
-            context_instance=RequestContext(request)
-            )
+    q = OrderAgeWarningTime.objects.all()
+    warningtime = q[0].time
+    
+    ctx= {}
+    ctx['locations'] = []
+    for location in locations:
+        oldest = location.latest_order
+        end = datetime.now()
+        flag = end - oldest > timedelta(minutes=warningtime)
+        ctx['locations'].append((location, flag))
+    return render(request, 'dashboard-orders.html', ctx)
 
 @login_required
 def showDashboardNotes (request):
@@ -383,6 +388,8 @@ def unfilledOrders(request):
             {'grid':grid},
             context_instance=RequestContext(request)
     )
+
+
 
 
 import csv

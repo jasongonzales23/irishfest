@@ -6,7 +6,7 @@ admin.autodiscover()
 from inventory.views import showLastInventory, updateInventory,recordOrder
 from inventory.views import orderHistory, inventoryHistory,startingInventory, notes, addNote
 from inventory.views import recordDelivery, reportList, report, dailyReport
-from inventory.views import latestInventories, latestOrders, unfilledOrders
+from inventory.views import latestInventories, latestOrders, unfilledOrders, latestNotes
 from inventory.views import csvTotal, csvDailyReport
 from inventory.views import tokensCollected, tokensDelivered
 from inventory.views import recordTokenDelivery, recordTokenCollection
@@ -46,6 +46,7 @@ urlpatterns = patterns('',
     url(r'^report/latest-inventories', latestInventories),
     url(r'^report/latest-orders', latestOrders),
     url(r'^report/unfilled-orders', unfilledOrders),
+    url(r'^report/latest-notes', latestNotes),
     url(r'^csv/report/total', csvTotal),
     url(r'^csv/report/(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/$',csvDailyReport),
     url(r'^token/booth/(?P<location_number>[^\.]+)$', tokensDelivered),
