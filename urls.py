@@ -6,7 +6,7 @@ admin.autodiscover()
 from inventory.views import showLastInventory, updateInventory,recordOrder
 from inventory.views import orderHistory, inventoryHistory,startingInventory, notes, addNote
 from inventory.views import recordDelivery, reportList, report, dailyReport
-from inventory.views import latestInventories, latestOrders, unfilledOrders, latestNotes
+from inventory.views import latestInventories, latestOrders, unfilledOrders
 from inventory.views import csvTotal, csvDailyReport
 from inventory.views import tokensCollected, tokensDelivered
 from inventory.views import recordTokenDelivery, recordTokenCollection
@@ -16,14 +16,6 @@ from inventory.views import collectionReport, deliveryReport, reconciliationRepo
 from inventory.views import csvCollectionReport,csvDeliveryReport, csvReconciliationReport
 from inventory.views import showDashboardInventory, showDashboardOrders, showDashboardNotes
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'irishfest.views.home', name='home'),
-    # url(r'^irishfest/', include('irishfest.foo.urls')),
-
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
     url(r'^admin_tools/', include('admin_tools.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('registration.backends.default.urls')),
@@ -46,7 +38,7 @@ urlpatterns = patterns('',
     url(r'^report/latest-inventories', latestInventories),
     url(r'^report/latest-orders', latestOrders),
     url(r'^report/unfilled-orders', unfilledOrders),
-    url(r'^report/latest-notes', latestNotes),
+    #url(r'^report/latest-notes', latestNotes),
     url(r'^csv/report/total', csvTotal),
     url(r'^csv/report/(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/$',csvDailyReport),
     url(r'^token/booth/(?P<location_number>[^\.]+)$', tokensDelivered),

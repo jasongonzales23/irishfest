@@ -371,7 +371,6 @@ def latestInventories(request):
             context_instance=RequestContext(request)
     )
 
-
 def unfilledOrders(request):
     locations = Location.objects.all().order_by('location_number')
     orders = Order.objects.all().order_by('-group__id', 'beverage__name')
@@ -388,10 +387,12 @@ def unfilledOrders(request):
             {'grid':grid},
             context_instance=RequestContext(request)
     )
+"""
+def latestNotes(request):
+    locations = Location.objects.annotate(oldest_note=Max('note__timestamp')).order_by('location_number')
 
-
-
-
+    return render(request, 'latest-notes.html', locations)
+"""
 import csv
 
 def csvTotal(request):

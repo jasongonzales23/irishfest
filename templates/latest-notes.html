@@ -1,9 +1,9 @@
 {% extends "reports-base.html" %}
-{% block body_class %}{% endblock %}{% block body_id %}latest-orders{% endblock %}
+{% block body_class %}{% endblock %}{% block body_id %}latest-notes{% endblock %}
 
 {% block base_content %}
 
-{% for location, beverage, time, reporter in grid %}
+{% for location in locations%}
 
 <h1>{{ location }} - {{ location.location_number }}</h1>
 <p class="datetime"><b>Reported At: </b>{{time.0}}</p>
@@ -17,8 +17,6 @@
     </tr>
   </thead>
   <tbody>
-    {% for thing in beverage %}
-    {% if thing.1 > 0 %}
     <tr>
       <td>
         {{ thing.0 }}
