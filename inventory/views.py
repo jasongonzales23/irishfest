@@ -48,10 +48,14 @@ def showDashboardInventory (request):
     ctx= {}
     ctx['locations'] = []
     for location in locations:
-        oldest = location.oldest_inventory
-        end = datetime.now()
-        flag = end - oldest > timedelta(minutes=warningtime)
-        ctx['locations'].append((location, flag))
+        if not location.vendor:
+            oldest = location.oldest_inventory
+            end = datetime.now()
+            if oldest:
+                flag = end - oldest > timedelta(minutes=warningtime)
+            else: 
+                flag = 'none'
+            ctx['locations'].append((location, flag))
     return render(request, 'dashboard-inventory.html', ctx)
 
 @login_required
@@ -65,15 +69,16 @@ def showDashboardOrders (request):
     ctx= {}
     ctx['locations'] = []
     for location in locations:
-        oldest = location.latest_order
-        end = datetime.now()
-        flag = end - oldest > timedelta(minutes=warningtime)
-        ctx['locations'].append((location, flag))
+        if not location.vendor:
+            oldest = location.latest_order
+            end = datetime.now()
+            flag = end - oldest > timedelta(minutes=warningtime)
+            ctx['locations'].append((location, flag))
     return render(request, 'dashboard-orders.html', ctx)
 
 @login_required
 def showDashboardNotes (request):
-    locations = Location.objects.annotate(oldest_note=Max('note__timestamp'), note_count=Count('note')).order_by('-oldest_note')
+    locations = Location.objects.filter(vendor=False).annotate(oldest_note=Max('note__timestamp'), note_count=Count('note')).order_by('-oldest_note')
 
     return render_to_response('dashboard-notes.html',
             { 'locations': locations },
@@ -257,7 +262,7 @@ def report(request):
 
     Returns a two-part tuple of the grid and beverages queryset.
     """
-    locations = Location.objects.order_by('location_number')
+    locations = Location.objects.filter(vendor=False).order_by('location_number')
     beverages = Beverage.objects.order_by('name')
 
     orders = Order.objects.values('location', 'beverage').annotate(total_units_ordered=Sum('units_ordered'))
@@ -288,7 +293,7 @@ def report(request):
     )
 
 def dailyReport(request, year, month, day):
-    locations = Location.objects.order_by('location_number')
+    locations = Location.objects.filter(vendor=False).order_by('location_number')
     beverages = Beverage.objects.order_by('name')
     requestString = '/report/' + year +'/' + month +'/'+ day+ '/'
 
@@ -323,7 +328,7 @@ def dailyReport(request, year, month, day):
     )
 
 def latestOrders(request):
-    locations = Location.objects.all().order_by('location_number').annotate(most_recent=Max('order__group'))
+    locations = Location.objects.filter(vendor=False).order_by('location_number').annotate(most_recent=Max('order__group'))
     orders = Order.objects.annotate(most_recent=Max('timestamp')).order_by('-group__id', 'beverage__name')
     newest = Order.objects.filter(group__in=[l.most_recent for l in locations])
 
@@ -345,7 +350,7 @@ def latestOrders(request):
     )
 
 def latestInventories(request):
-    locations = Location.objects.all().order_by('location_number').annotate(most_recent=Max('inventory__group'))
+    locations = Location.objects.filter(vendor=False).order_by('location_number').annotate(most_recent=Max('inventory__group'))
     inventories = Inventory.objects.annotate(most_recent=Max('timestamp')).order_by('-group__id', 'beverage__name')
     newest = Inventory.objects.filter(group__in=[l.most_recent for l in locations])
     standards = LocationStandard.objects.all()
@@ -372,7 +377,7 @@ def latestInventories(request):
     )
 
 def unfilledOrders(request):
-    locations = Location.objects.all().order_by('location_number')
+    locations = Location.objects.filter(vendor=False).order_by('location_number')
     orders = Order.objects.all().order_by('-group__id', 'beverage__name')
 
     grid = []
@@ -616,7 +621,7 @@ def boothTokenNote(request, location_number):
 
 @permission_required('inventory.add_token')
 def collectionReport(request):
-    locations = Location.objects.order_by('location_number')
+    locations = Location.objects.filter(vendor=False).order_by('location_number')
     tokens = TokenCollection.objects.order_by('location', 'fiscal_day')
     dates = TokenCollection.objects.dates('fiscal_day','day');
 
@@ -781,7 +786,7 @@ def csvDeliveryReport(request):
 
 @permission_required('inventory.add_token')
 def reconciliationReport(request):
-    locations = Location.objects.order_by('location_number')
+    locations = Location.objects.filter(vendor=False).order_by('location_number')
     tokens = TokenCollection.objects.order_by('location', 'fiscal_day')
     dates = TokenCollection.objects.dates('fiscal_day','day');
     orders = Order.objects.order_by('location__location_number')

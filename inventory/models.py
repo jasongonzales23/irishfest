@@ -27,6 +27,7 @@ class Location(models.Model):
     beverages = models.ManyToManyField(Beverage, through='LocationStandard')
     location_number=models.CharField(max_length=255)
     organization=models.CharField(max_length=255)
+    vendor=models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.name

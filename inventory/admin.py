@@ -25,7 +25,7 @@ class BeverageAdmin(admin.ModelAdmin):
     #extra = 5
 
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ('name', 'location_number', 'organization',)
+    list_display = ('name', 'location_number', 'organization', 'vendor')
 
     inlines = [
             LocationStandardInlineAdmin, InventoryInlineAdmin,
