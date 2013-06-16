@@ -84,6 +84,14 @@ def showDashboardNotes (request):
             { 'locations': locations },
             context_instance=RequestContext(request)
             )
+@login_required
+def showVendorDashboard(request):
+    locations = Location.objects.filter(vendor=True).order_by('name')
+
+    return render_to_response('vendor-dashboard.html',
+            { 'locations': locations },
+            context_instance=RequestContext(request)
+            )
 
 @login_required
 def showLastInventory(request, location_number):

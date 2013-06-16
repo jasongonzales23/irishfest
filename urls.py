@@ -14,7 +14,7 @@ from inventory.views import addLocationTokenNote, addBoothTokenNote
 from inventory.views import locationTokenNote, boothTokenNote, addBoothTokenNote, addLocationTokenNote
 from inventory.views import collectionReport, deliveryReport, reconciliationReport
 from inventory.views import csvCollectionReport,csvDeliveryReport, csvReconciliationReport
-from inventory.views import showDashboardInventory, showDashboardOrders, showDashboardNotes
+from inventory.views import showDashboardInventory, showDashboardOrders, showDashboardNotes, showVendorDashboard
 urlpatterns = patterns('',
     url(r'^admin_tools/', include('admin_tools.urls')),
     url(r'^admin/', include(admin.site.urls)),
@@ -23,6 +23,8 @@ urlpatterns = patterns('',
     url(r'^dashboard/inventory', showDashboardInventory),
     url(r'^dashboard/orders', showDashboardOrders),
     url(r'^dashboard/notes', showDashboardNotes),
+    #vandor dashboard
+    url(r'^dashboard/vendors', showVendorDashboard),
     #regular old URLs
     url(r'^location/(?P<location_number>[^\.]+)$', showLastInventory),
     url(r'^update-inventory/(?P<location_number>[^\.]+)$', updateInventory),
