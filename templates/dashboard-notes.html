@@ -13,6 +13,7 @@
   </thead>
   <tbody>
   {% for location in locations %}
+  {% if location.note_count > 0 %}
     <tr>
       <td><a href="/notes/{{ location.location_number }}">{{ location.name }}</a></td>
       <td><a href="/notes/{{ location.location_number }}">{{ location.note_count }}</a></td>
@@ -20,6 +21,7 @@
       <td><a href="/notes/{{ location.location_number }}">{% if location.oldest_note %}{{ location.oldest_note|timesince}}{% else %}--{% endif %}</a></td>
       <td><a href="/notes/{{ location.location_number }}">{{ location.location_number|default:"--" }}</a></td>
     </tr>
+    {% endif %}
     {% endfor %}
   </tbody>
 </table>
