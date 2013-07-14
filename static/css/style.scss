@@ -128,6 +128,11 @@ nav ul, nav ol {
   margin: 0;
   padding: 0; }
 
+.user-account #nav {
+    display: none;
+}
+
+
 img {
   border: 0;
   -ms-interpolation-mode: bicubic;
@@ -248,7 +253,7 @@ header {
   overflow:auto;
 }
 
-header .login {
+header .logout {
   position: absolute;
   right: 0;
   color: #fff;
@@ -260,7 +265,7 @@ header .login {
   border-bottom-right-radius: 6px;
 }
 
-header .login a, header .login a:visited {
+header .logout a, header .logout a:visited {
   color: #fff;
   text-decoration: none;
 }
@@ -295,9 +300,8 @@ header .login a, header .login a:visited {
 }
 
 /*NAVIGATION STYLES*/
-#last-inventory .last-inventory, #order-history .order-history,
-#inventory-history .inventory-history, #starting-inventory .starting-inventory,
-#notes .notes {
+.selected
+{
     background:url(../img/bg-noise.jpg) 0 0 repeat;
 }
 
@@ -308,10 +312,15 @@ header .login a, header .login a:visited {
     max-height: 668px;
 }
 
+.low {
+  color: #ff5500;
+  font-weight:bold;
+}
+
  /*STYLES FOR TABLES*/
 @media all and (orientation: landscape) {
     .table-wrap {
-        height: 440px;
+        height: 380px;
         overflow: scroll;
     }
      
@@ -336,13 +345,21 @@ tr {
     border-bottom:1px dotted #6D6D6D;
 }
 
-tr.datetime {
+tr.datetime, tr.reporter {
     border:none;
 }
 
-.datetime td  {
+.datetime td, .reporter td, {
     padding:30px 0 8px 5px;
     color:#E26E0A;
+}
+
+.datetime, .reporter  {
+    color:#E26E0A;
+}
+
+.reporter td {
+  padding:0 0 8px 5px;
 }
 
 th {
@@ -350,7 +367,18 @@ th {
 }
 
 td, th {
-    padding:8px 5px;
+    padding:15px 5px;
+}
+
+.deliver {
+    position:relative;
+    background: #2F383C;
+}
+
+.deliver::after {
+  content:'\21B5';
+  position:absolute;
+  right:8px;
 }
 
 /*STYLES FOR TABLES*/
@@ -377,7 +405,7 @@ header h2 {
   margin: 0 auto; }
 
 h3 {
-  color: #666; }
+  color: #888; }
 
 .text {
   width: 650px;
@@ -392,11 +420,59 @@ h3 {
   margin: 0 0 100px 0; }
 
 #login form {
-  border-right: 1px solid #ccc;
   padding: 0 30px 0 0px; }
 
 form {
-  width: 450px; }
+  width: 770px; 
+}
+.form {
+  list-style:none;
+  padding:0;
+}
+
+.form li {
+  border-bottom:1px dotted #6D6D6D;
+  padding: 8px 0;
+}
+
+.form .labelish, .form li input{
+  background:none;
+  border:1px solid transparent;
+  color:#fff;
+  -webkit-appearance: none;
+}
+
+.form li input.number:focus {
+  border:1px solid green;
+  background:#111;
+  -webkit-appearance:none;
+}
+
+.form li input.number {
+  background: #262d30;
+  border-radius: 6px;
+  border: 1px solid #222;
+}
+
+.form li:nth-child(even) {
+  float:left;
+  clear:both;
+  width:550px;
+}
+
+.form li:nth-child(odd) {
+  float:left;
+  position:relative;
+}
+
+.form .errorlist {
+  position: absolute;
+  right: -100%;
+}
+
+.form .errorlist li {
+  border:none;
+}
 
 .column {
   width: 450px;
@@ -421,7 +497,7 @@ label {
   font-weight: bold; }
 
 input, textarea {
-  padding: 8px 2px;
+  padding: 8px;
   border: 1px solid #AAA;
   background: white;
   -moz-box-sizing: border-box;
@@ -460,19 +536,19 @@ input[type="submit"] {
   margin: 7px 0 0 0;
   float: none; }
 
-.buttonish {
+.buttonish, .cancelButtonish {
   display: inline-block;
   text-align: center;
   padding: 1px 0 3px 0; }
 
-button, .buttonish {
+button, .buttonish, .cancelButtonish{
   width: 49%;
   line-height: 2em;
   margin: 25px 0px;
   font-size: 16px;
   font-weight: bold;
   color: white;
-    background-color: #81ab57;
+  background-color: #81ab57;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#81ab57), to(#5e833a)); /* Saf4+, Chrome */
   background-image: -webkit-linear-gradient(top, #81ab57, #5e833a); /* Chrome 10+, Saf5.1+, iOS 5+ */
   background-image:    -moz-linear-gradient(top, #81ab57, #5e833a); /* FF3.6+ */
@@ -484,9 +560,33 @@ button, .buttonish {
   border: 1px solid #497043; }
 
 button a, button a:hover, button a:visited, a.buttonish,
-a.buttonish:hover, a.buttonish:visited {
+a.buttonish:hover, a.buttonish:visited, .cancelButtonish{
   text-decoration: none;
   color: #fff; }
+
+.cancelButtonish, .cancelButtonish:hover {
+  color: white;
+background-image: linear-gradient(bottom, rgb(77,77,77) 0%, rgb(120,120,120) 50%);
+background-image: -o-linear-gradient(bottom, rgb(77,77,77) 0%, rgb(120,120,120) 50%);
+background-image: -moz-linear-gradient(bottom, rgb(77,77,77) 0%, rgb(120,120,120) 50%);
+background-image: -webkit-linear-gradient(bottom, rgb(77,77,77) 0%, rgb(120,120,120) 50%);
+background-image: -ms-linear-gradient(bottom, rgb(77,77,77) 0%, rgb(120,120,120) 50%);
+
+background-image: -webkit-gradient(
+	linear,
+	left bottom,
+	left top,
+	color-stop(0, rgb(77,77,77)),
+	color-stop(0.5, rgb(120,120,120))
+);  border: 1px solid #222;
+  text-shadow: 1px 1px 0px #1e574d;
+  width: 99%;
+}
+
+.cancelButtonish.small {
+  width: 377px;
+}
+
 
 .js .helptext {
   display: none;
@@ -527,7 +627,7 @@ a.buttonish:hover, a.buttonish:visited {
   top: 0;
   left: 0;
   background: #333;
-  /*opacity:.8;*/
+  opacity:.6;
   width: 100%;
   height: 100%; }
 
@@ -544,12 +644,13 @@ a.buttonish:hover, a.buttonish:visited {
   left: -50%;
   width: 480px;
   padding: 30px;
-  background: white;
-  border: 8px solid #3E3A3E;
+  background: #000;
+  border-radius:10px;
+  /*border: 8px solid #3E3A3E;*/
   max-height: 100%;
   overflow: scroll;
   position: relative;
-  font-size: 10px; }
+  font-size: 14px; }
 
 #modal .modal-text {
   font-size: 16px;
@@ -673,6 +774,17 @@ a.buttonish:hover, a.buttonish:visited {
 .goingAway {
   background: #F8F2AF; }
 
+.blocker {
+  position:absolute;
+  top:0;
+  left:0;
+  background:#000;
+  opacity:.7;
+  height: 100%;
+  width: 100%;
+  border-radius:4px;
+}
+
 .ir {
   display: block;
   border: 0;
@@ -682,7 +794,8 @@ a.buttonish:hover, a.buttonish:visited {
   background-repeat: no-repeat;
   text-align: left;
   direction: ltr;
-  *line-height: 0; }
+  *line-height: 0; 
+}
 
 .ir br {
   display: none; }

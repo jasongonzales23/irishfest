@@ -160,6 +160,10 @@ nav ul, nav ol {
   padding: 0;
 }
 
+.user-account #nav {
+  display: none;
+}
+
 img {
   border: 0;
   -ms-interpolation-mode: bicubic;
@@ -306,7 +310,7 @@ header {
   overflow: auto;
 }
 
-header .login {
+header .logout {
   position: absolute;
   right: 0;
   color: #fff;
@@ -318,7 +322,7 @@ header .login {
   border-bottom-right-radius: 6px;
 }
 
-header .login a, header .login a:visited {
+header .logout a, header .logout a:visited {
   color: #fff;
   text-decoration: none;
 }
@@ -353,9 +357,7 @@ header .login a, header .login a:visited {
 }
 
 /*NAVIGATION STYLES*/
-#last-inventory .last-inventory, #order-history .order-history,
-#inventory-history .inventory-history, #starting-inventory .starting-inventory,
-#notes .notes {
+.selected {
   background: url(../img/bg-noise.jpg) 0 0 repeat;
 }
 
@@ -364,12 +366,16 @@ header .login a, header .login a:visited {
   max-height: 668px;
 }
 
+.low {
+  color: #ff5500;
+  font-weight: bold;
+}
+
 /*STYLES FOR TABLES*/
 @media all and (orientation: landscape) {
   .table-wrap {
-    height: 440px;
+    height: 380px;
     overflow: scroll;
-    -webkit-overflow-scrolling: touch;
   }
 }
 @media all and (orientation: portrait) {
@@ -390,13 +396,25 @@ tr {
   border-bottom: 1px dotted #6D6D6D;
 }
 
-tr.datetime {
+tr.warning {
+  background: #F00;
+}
+
+tr.datetime, tr.reporter {
   border: none;
 }
 
-.datetime td {
+.datetime td, .reporter td {
   padding: 30px 0 8px 5px;
   color: #E26E0A;
+}
+
+.datetime, .reporter {
+  color: #E26E0A;
+}
+
+.reporter td {
+  padding: 0 0 8px 5px;
 }
 
 th {
@@ -404,7 +422,29 @@ th {
 }
 
 td, th {
-  padding: 8px 5px;
+  padding: 15px 5px;
+}
+
+.dashboard td {
+  padding: 0;
+}
+
+.dashboard td a {
+  text-decoration: none;
+  padding: 15px 5px;
+  display: block;
+  color: #fff;
+}
+
+.deliver {
+  position: relative;
+  background: #2F383C;
+}
+
+.deliver::after {
+  content: '\21B5';
+  position: absolute;
+  right: 8px;
 }
 
 /*STYLES FOR TABLES*/
@@ -433,7 +473,7 @@ header h2 {
 }
 
 h3 {
-  color: #666;
+  color: #888;
 }
 
 .text {
@@ -451,13 +491,84 @@ h3 {
 }
 
 #login form {
-  border-right: 1px solid #ccc;
   padding: 0 30px 0 0px;
 }
 
 form {
-  width: 450px;
+  width: 770px;
 }
+
+.form {
+  list-style: none;
+  padding: 0;
+}
+
+.form li {
+  border-bottom: 1px dotted #6D6D6D;
+  padding: 8px 0;
+}
+
+.form .labelish, .form li input {
+  background: none;
+  border: 1px solid transparent;
+  color: #fff;
+  -webkit-appearance: none;
+}
+
+.form li input.number:focus {
+  border: 1px solid green;
+  background: #111;
+  -webkit-appearance: none;
+}
+
+.form li input.number {
+  background: #262d30;
+  border-radius: 6px;
+  border: 1px solid #222;
+  width: 50%;
+}
+
+.form li .button {
+  border-radius: 6px;
+  display: inline-block;
+  width: 20%;
+  background: #262d30;
+  color: #fff;
+  margin-top: 1px;
+  text-align: center;
+  line-height: 32px;
+}
+
+.form li .dec.button {
+  float: left;
+  margin-right: 5%;
+}
+
+.form li .inc.button {
+  float: right;
+  margin-left: 5%;
+}
+
+.form li:nth-child(even) {
+  float: left;
+  clear: both;
+  width: 550px;
+}
+
+.form li:nth-child(odd) {
+  float: left;
+  position: relative;
+}
+
+.form .errorlist {
+  position: absolute;
+  right: -100%;
+}
+
+.form .errorlist li {
+  border: none;
+}
+
 
 .column {
   width: 450px;
@@ -487,7 +598,7 @@ label {
 }
 
 input, textarea {
-  padding: 8px 2px;
+  padding: 8px;
   border: 1px solid #AAA;
   background: white;
   -moz-box-sizing: border-box;
@@ -534,13 +645,13 @@ input[type="submit"] {
   float: none;
 }
 
-.buttonish {
+.buttonish, .cancelButtonish {
   display: inline-block;
   text-align: center;
   padding: 1px 0 3px 0;
 }
 
-button, .buttonish {
+button, .buttonish, .cancelButtonish {
   width: 49%;
   line-height: 2em;
   margin: 25px 0px;
@@ -565,9 +676,26 @@ button, .buttonish {
 }
 
 button a, button a:hover, button a:visited, a.buttonish,
-a.buttonish:hover, a.buttonish:visited {
+a.buttonish:hover, a.buttonish:visited, .cancelButtonish {
   text-decoration: none;
   color: #fff;
+}
+
+.cancelButtonish, .cancelButtonish:hover {
+  color: white;
+  background-image: linear-gradient(bottom, #4d4d4d 0%, #787878 50%);
+  background-image: -o-linear-gradient(bottom, #4d4d4d 0%, #787878 50%);
+  background-image: -moz-linear-gradient(bottom, #4d4d4d 0%, #787878 50%);
+  background-image: -webkit-linear-gradient(bottom, #4d4d4d 0%, #787878 50%);
+  background-image: -ms-linear-gradient(bottom, #4d4d4d 0%, #787878 50%);
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #4d4d4d), color-stop(0.5, #787878));
+  border: 1px solid #222;
+  text-shadow: 1px 1px 0px #1e574d;
+  width: 99%;
+}
+
+.cancelButtonish.small {
+  width: 377px;
 }
 
 .js .helptext {
@@ -604,7 +732,7 @@ a.buttonish:hover, a.buttonish:visited {
 
 .js .terms {
   text-decoration: underline;
-  color: blue;
+  color: #fff;
 }
 
 #blanket {
@@ -613,7 +741,7 @@ a.buttonish:hover, a.buttonish:visited {
   top: 0;
   left: 0;
   background: #333;
-  /*opacity:.8;*/
+  opacity: .6;
   width: 100%;
   height: 100%;
 }
@@ -632,12 +760,13 @@ a.buttonish:hover, a.buttonish:visited {
   left: -50%;
   width: 480px;
   padding: 30px;
-  background: white;
-  border: 8px solid #3E3A3E;
+  background: #000;
+  border-radius: 10px;
+  /*border: 8px solid #3E3A3E;*/
   max-height: 100%;
   overflow: scroll;
   position: relative;
-  font-size: 10px;
+  font-size: 14px;
 }
 
 #modal .modal-text {
@@ -783,6 +912,17 @@ a.buttonish:hover, a.buttonish:visited {
 
 .goingAway {
   background: #F8F2AF;
+}
+
+.blocker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #000;
+  opacity: .7;
+  height: 100%;
+  width: 100%;
+  border-radius: 4px;
 }
 
 .ir {
