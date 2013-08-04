@@ -96,7 +96,7 @@ $('form').on('click', 'input', function(e){
     $this.val('');
     }
     else if ($this.hasClass('labelish')) {
-    $this.parent('li').next().find('input').val('');
+    $this.parent('li').next().find('input[type="number"]').val('');
     }
 });
 
