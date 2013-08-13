@@ -753,8 +753,8 @@ def csvDeliveryReport(request):
     writer = csv.writer(response)
 
     locations = TokenBooth.objects.order_by('location_number')
-    tokens = TokenDelivery.objects.order_by('location', 'timestamp')
-    dates = TokenDelivery.objects.dates('timestamp','day');
+    tokens = TokenDelivery.objects.order_by('location', 'fiscal_day')
+    dates = TokenDelivery.objects.dates('fiscal_day','day');
     
     heading= ['Token Collection Report']
     writer.writerow(heading)
@@ -771,7 +771,7 @@ def csvDeliveryReport(request):
         for date in dates:
             daytotal = 0
             for token in tokens:
-                if token.location == location and token.timestamp.date() == date.date():
+                if token.location == location and token.fiscal_day == date.date():
                     daytotal += token.tokens
                     rowtotal += token.tokens
             row.append(daytotal)
@@ -866,8 +866,8 @@ def csvReconciliationReport(request):
     writer = csv.writer(response)
 
     locations = Location.objects.order_by('location_number')
-    tokens = TokenCollection.objects.order_by('location', 'timestamp')
-    dates = TokenCollection.objects.dates('timestamp','day');
+    tokens = TokenCollection.objects.order_by('location', 'fiscal_day')
+    dates = TokenCollection.objects.dates('fiscal_day','day');
     orders = Order.objects.order_by('location__location_number')
 
     heading= ['Token Reconciliation Report']
@@ -889,7 +889,7 @@ def csvReconciliationReport(request):
         for date in dates:
             daytotal = 0
             for token in tokens:
-                if token.location == location and token.timestamp.date() == date.date():
+                if token.location == location and token.fiscal_day == date.date():
                     daytotal += token.tokens
                     rowtotal += token.tokens
             row.append(daytotal)
